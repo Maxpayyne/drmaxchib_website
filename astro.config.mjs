@@ -4,10 +4,13 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // https://astro.build/config
 export default defineConfig({
   // CRITICAL for SEO: canonical URL used by sitemap, RSS, and SEO component
   site: 'https://drmaxchib.com',
+
   trailingSlash: 'never',
 
   integrations: [
@@ -36,4 +39,6 @@ export default defineConfig({
     prefetchAll: false,
     defaultStrategy: 'hover',
   },
+
+  adapter: cloudflare(),
 });
