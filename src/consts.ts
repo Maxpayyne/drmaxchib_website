@@ -29,8 +29,8 @@ export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/maxwell-o-chi/',
   github: 'https://github.com/', // Update with your username
   email: 'info@drmaxchib.com', // Set up via Cloudflare Email Routing
-  scholar: '', // Add Google Scholar profile when ready
-  orcid: '', // Add ORCID iD when ready
+  scholar: 'https://scholar.google.com/citations?hl=en&user=m2kFng0AAAAJ', // Add Google Scholar profile when ready
+  orcid: 'https://orcid.org/my-orcid?orcid=0000-0002-3917-5364', // Add ORCID iD when ready
 } as const;
 
 /** Categories for the writing/blog section */
