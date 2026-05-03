@@ -1,13 +1,17 @@
 {
   "name": "drmaxchib-site",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Personal site of Maxwell O. Chibuogwu, PhD",
+  "type": "module",
   "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Maxwell Chibuogwu",
   "license": "ISC",
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
