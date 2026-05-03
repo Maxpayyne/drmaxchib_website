@@ -28,7 +28,7 @@ export const NAV: { name: string; href: string }[] = [
 export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/maxwell-o-chi/',
   github: 'https://github.com/', // Update with your username
-  email: 'hello@drmaxchib.com', // Set up via Cloudflare Email Routing
+  email: 'info@drmaxchib.com', // Set up via Cloudflare Email Routing
   scholar: '', // Add Google Scholar profile when ready
   orcid: '', // Add ORCID iD when ready
 } as const;
