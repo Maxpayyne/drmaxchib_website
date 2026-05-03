@@ -1,0 +1,186 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+import { BLOG_CATEGORIES } from '../../consts';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout
+  title="Writing"
+  description="Essays on Nigerian institutions, agricultural science, AI tools for Africa, and the practice of building. Written by Maxwell O. Chibuogwu, PhD."
+>
+  <article class="blog-index">
+    <header class="page-header">
+      <div class="container-narrow">
+        <p class="eyebrow reveal">Writing</p>
+        <h1 class="reveal reveal-delay-1">
+          Notes from the lab, the laptop, and Lagos.
+        </h1>
+        <p class="lede reveal reveal-delay-2">
+          Essays on agricultural science, AI tooling for African development,
+          civic technology, and whatever else seems worth committing to public
+          memory. New writing posts to <a href="/rss.xml">RSS</a> as it appears.
+        </p>
+      </div>
+    </header>
+
+    <!-- Category jumps -->
+    <nav class="cat-nav container-narrow" aria-label="Blog categories">
+      {Object.values(BLOG_CATEGORIES).map((cat) => (
+        <a href={`/blog/category/${cat.slug}`} class="cat-pill">{cat.name}</a>
+      ))}
+    </nav>
+
+    <section class="section">
+      <div class="container-narrow">
+        {posts.length === 0 ? (
+          <div class="empty">
+            <p>
+              No posts yet — the first essays land soon. In the meantime,
+              connect on <a href="https://www.linkedin.com/in/maxwell-o-chi/" target="_blank" rel="noopener">LinkedIn</a>
+              or follow the <a href="/rss.xml">RSS feed</a>.
+            </p>
+          </div>
+        ) : (
+          <ul class="post-list">
+            {posts.map((post) => {
+              const cat = BLOG_CATEGORIES[post.data.category];
+              return (
+                <li>
+                  <a href={`/blog/${post.id}`} class="post-row">
+                    <div class="post-row-meta">
+                      <FormattedDate date={post.data.pubDate} />
+                      <span class="post-row-cat">{cat.name}</span>
+                    </div>
+                    <h2 class="post-row-title">{post.data.title}</h2>
+                    <p class="post-row-desc">{post.data.description}</p>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .page-header {
+    padding-block: clamp(3rem, 8vh, 5rem) 2rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 1.5rem;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 1.5rem;
+    max-width: 22ch;
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .cat-pill {
+    display: inline-block;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .cat-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background-color: var(--accent-soft);
+  }
+
+  .section { padding-block: 1rem clamp(3rem, 8vh, 6rem); }
+
+  .empty {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.0625rem;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-list li { border-top: 1px solid var(--border); }
+  .post-list li:last-child { border-bottom: 1px solid var(--border); }
+
+  .post-row {
+    display: block;
+    padding: 1.75rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: padding 0.2s ease;
+  }
+
+  .post-row:hover { padding-left: 1rem; }
+
+  .post-row-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    margin-bottom: 0.5rem;
+  }
+
+  .post-row-cat {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .post-row-title {
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .post-row-desc {
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .post-row:hover .post-row-title { color: var(--accent); }
+</style>

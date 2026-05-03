@@ -1,0 +1,564 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+import { SITE, BLOG_CATEGORIES } from '../consts';
+
+// Pull latest 4 published posts
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+
+// Pull featured projects
+const projects = (await getCollection('projects', ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+---
+
+<Layout title={undefined} description={SITE.description}>
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero grain">
+    <div class="container-wide">
+      <p class="hero-eyebrow reveal">Maxwell O. Chibuogwu, PhD</p>
+      <h1 class="hero-title reveal reveal-delay-1">
+        Plant pathologist by training.<br />
+        <span class="hero-accent">Builder by intent.</span>
+      </h1>
+      <p class="hero-lede reveal reveal-delay-2">
+        I research mycotoxins in dairy forages at the USDA, and I'm building
+        AI-driven tools to close the technology gap between Africa and the rest
+        of the world — beginning with weather data Nigerian farmers can actually
+        rely on.
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="/about" class="btn-primary">About me</a>
+        <a href="/blog" class="btn-ghost">Read the blog →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MISSION / NOW
+       ============================================================ -->
+  <section class="section">
+    <div class="container-narrow">
+      <div class="section-header">
+        <span class="section-label">What I'm working on</span>
+        <h2 class="section-title">Three threads, one mission.</h2>
+      </div>
+
+      <div class="threads">
+        <article class="thread">
+          <span class="thread-num">01</span>
+          <h3>Agricultural research</h3>
+          <p>
+            Postdoctoral work at USDA-ARS on disease and toxin management in
+            dairy forages — predictive modeling, whole-genome sequencing of
+            <em>Fusarium</em> species, and fungicide resistance under climate
+            change.
+          </p>
+          <a href="/research" class="thread-link">See research →</a>
+        </article>
+
+        <article class="thread">
+          <span class="thread-num">02</span>
+          <h3>AI tools for Africa</h3>
+          <p>
+            Vibe-coded apps that fill technology gaps where governments fall
+            short. First on the bench: a weather product for Nigerian farmers
+            built on modern forecasting APIs while we plan for owned satellite
+            data downstream.
+          </p>
+          <a href="/projects" class="thread-link">See projects →</a>
+        </article>
+
+        <article class="thread">
+          <span class="thread-num">03</span>
+          <h3>Writing & public thought</h3>
+          <p>
+            Notes on Nigerian institutions, the practice of science, and what
+            it actually takes to ship civic technology in low-trust
+            environments.
+          </p>
+          <a href="/blog" class="thread-link">Read writing →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LATEST WRITING
+       ============================================================ -->
+  {posts.length > 0 && (
+    <section class="section section-tinted">
+      <div class="container-wide">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">Latest writing</span>
+            <h2 class="section-title">From the journal.</h2>
+          </div>
+          <a href="/blog" class="section-link">All posts →</a>
+        </div>
+
+        <ul class="posts-list">
+          {posts.map((post) => {
+            const cat = BLOG_CATEGORIES[post.data.category];
+            return (
+              <li>
+                <a href={`/blog/${post.id}`} class="post-card">
+                  <div class="post-card-meta">
+                    <span class="post-card-cat">{cat.name}</span>
+                    <FormattedDate date={post.data.pubDate} />
+                  </div>
+                  <h3 class="post-card-title">{post.data.title}</h3>
+                  <p class="post-card-desc">{post.data.description}</p>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- ============================================================
+       FEATURED PROJECTS
+       ============================================================ -->
+  {projects.length > 0 && (
+    <section class="section">
+      <div class="container-wide">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">Selected work</span>
+            <h2 class="section-title">Projects.</h2>
+          </div>
+          <a href="/projects" class="section-link">All projects →</a>
+        </div>
+
+        <ul class="projects-grid">
+          {projects.map((project) => (
+            <li>
+              <a href={`/projects/${project.id}`} class="card project-card">
+                <span class="project-status" data-status={project.data.status}>
+                  {project.data.status}
+                </span>
+                <h3>{project.data.title}</h3>
+                <p>{project.data.description}</p>
+                {project.data.stack.length > 0 && (
+                  <ul class="project-stack">
+                    {project.data.stack.slice(0, 4).map((tech) => (
+                      <li>{tech}</li>
+                    ))}
+                  </ul>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- ============================================================
+       CONTACT CTA
+       ============================================================ -->
+  <section class="section">
+    <div class="container-narrow">
+      <div class="cta-card">
+        <h2>Get in touch.</h2>
+        <p>
+          Researchers, builders, and Nigerians shipping things in agriculture or
+          civic tech — I'd love to hear from you. The fastest way is LinkedIn.
+        </p>
+        <div class="cta-actions">
+          <a href={SITE.url} class="btn-primary" style="display:none"></a>
+          <a href="https://www.linkedin.com/in/maxwell-o-chi/" target="_blank" rel="noopener" class="btn-primary">
+            Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    padding-block: clamp(4rem, 12vh, 8rem) clamp(3rem, 10vh, 6rem);
+    background:
+      radial-gradient(
+        ellipse 100% 60% at 80% 0%,
+        color-mix(in oklab, var(--accent) 12%, transparent),
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse 80% 50% at 0% 100%,
+        color-mix(in oklab, var(--accent) 8%, transparent),
+        transparent 60%
+      );
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 1.5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin: 0 0 2rem;
+    max-width: 18ch;
+  }
+
+  .hero-accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .hero-lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 56ch;
+    margin: 0 0 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn-primary,
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent);
+    color: var(--color-cream-50);
+    border: 1px solid var(--accent);
+  }
+
+  :global([data-theme="dark"]) .btn-primary {
+    color: var(--color-forest-900);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    color: var(--text);
+    border: 1px solid var(--border);
+    background-color: transparent;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ============================================================
+     SECTIONS
+     ============================================================ */
+  .section {
+    padding-block: clamp(3rem, 8vh, 6rem);
+  }
+
+  .section-tinted {
+    background-color: var(--surface);
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-header-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .section-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  .section-link:hover { text-decoration: underline; }
+
+  /* ============================================================
+     THREADS
+     ============================================================ */
+  .threads {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .thread {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 2rem;
+    row-gap: 0.5rem;
+  }
+
+  .thread:last-child { border-bottom: 1px solid var(--border); }
+
+  .thread-num {
+    font-family: var(--font-mono);
+    color: var(--text-subtle);
+    font-size: 0.875rem;
+    grid-row: span 4;
+    padding-top: 0.4rem;
+  }
+
+  .thread h3 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .thread p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 60ch;
+  }
+
+  .thread-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    margin-top: 0.5rem;
+  }
+
+  .thread-link:hover { text-decoration: underline; }
+
+  /* ============================================================
+     POST LIST
+     ============================================================ */
+  .posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    display: block;
+    padding: 1.75rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+  }
+
+  .post-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+    box-shadow: 0 8px 24px -12px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+
+  .post-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    margin-bottom: 0.75rem;
+  }
+
+  .post-card-cat {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .post-card-title {
+    font-size: 1.375rem;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .post-card-desc {
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.9375rem;
+  }
+
+  /* ============================================================
+     PROJECTS GRID
+     ============================================================ */
+  .projects-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-card h3 {
+    font-size: 1.25rem;
+    margin: 0.5rem 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .project-card p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-size: 0.9375rem;
+  }
+
+  .project-status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  .project-status[data-status="shipped"] {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .project-status[data-status="in-progress"] {
+    background-color: color-mix(in oklab, #d97706 15%, transparent);
+    color: #d97706;
+  }
+
+  :global([data-theme="dark"]) .project-status[data-status="in-progress"] {
+    color: #fbbf24;
+  }
+
+  .project-stack {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project-stack li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-subtle);
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ============================================================
+     CTA
+     ============================================================ */
+  .cta-card {
+    text-align: center;
+    padding: 3rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background:
+      radial-gradient(
+        ellipse 100% 80% at 50% 0%,
+        var(--accent-soft),
+        transparent 70%
+      );
+  }
+
+  .cta-card h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin: 0 0 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-card p {
+    color: var(--text-muted);
+    max-width: 50ch;
+    margin: 0 auto 2rem;
+    line-height: 1.55;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .posts-list { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .thread { grid-template-columns: 1fr; column-gap: 0; }
+    .thread-num { grid-row: auto; padding-top: 0; }
+  }
+</style>

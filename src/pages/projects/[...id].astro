@@ -1,0 +1,245 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { PROJECT_CATEGORIES } from '../../consts';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { data } = project;
+const cat = PROJECT_CATEGORIES[data.category];
+---
+
+<Layout
+  title={data.title}
+  description={data.description}
+  image={data.ogImage}
+  article={{
+    publishedTime: data.pubDate,
+    modifiedTime: data.updatedDate,
+    tags: data.tags,
+    section: cat.name,
+  }}
+>
+  <article class="project-detail">
+    <div class="container-narrow">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/projects">Projects</a>
+        <span aria-hidden="true">→</span>
+        <span>{cat.name}</span>
+      </nav>
+
+      <header class="proj-header reveal">
+        <div class="proj-meta-row">
+          <span class="proj-status" data-status={data.status}>{data.status}</span>
+          <span class="proj-cat">{cat.name}</span>
+        </div>
+        <h1>{data.title}</h1>
+        <p class="proj-lede">{data.description}</p>
+        <p class="proj-date">
+          Started <FormattedDate date={data.pubDate} />
+          {data.updatedDate && (
+            <> · Updated <FormattedDate date={data.updatedDate} /></>
+          )}
+        </p>
+      </header>
+
+      {(data.repoUrl || data.demoUrl || data.paperUrl) && (
+        <div class="proj-links reveal reveal-delay-1">
+          {data.demoUrl && (
+            <a href={data.demoUrl} target="_blank" rel="noopener" class="btn-primary">
+              Live demo ↗
+            </a>
+          )}
+          {data.repoUrl && (
+            <a href={data.repoUrl} target="_blank" rel="noopener" class="btn-ghost">
+              GitHub ↗
+            </a>
+          )}
+          {data.paperUrl && (
+            <a href={data.paperUrl} target="_blank" rel="noopener" class="btn-ghost">
+              Paper ↗
+            </a>
+          )}
+        </div>
+      )}
+
+      {data.stack.length > 0 && (
+        <aside class="proj-stack-bar reveal reveal-delay-2">
+          <span class="stack-label">Stack</span>
+          <ul>
+            {data.stack.map((tech) => <li>{tech}</li>)}
+          </ul>
+        </aside>
+      )}
+
+      <div class="hairline" aria-hidden="true"></div>
+
+      <div class="proj-body prose-editorial reveal reveal-delay-3">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .project-detail {
+    padding-block: 3rem 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover { color: var(--accent); }
+
+  .proj-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .proj-status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  .proj-status[data-status="shipped"] {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .proj-status[data-status="in-progress"] {
+    background-color: color-mix(in oklab, #d97706 15%, transparent);
+    color: #d97706;
+  }
+
+  .proj-cat {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .proj-header h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 1rem;
+  }
+
+  .proj-lede {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
+
+  .proj-date {
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+    margin: 0;
+  }
+
+  .proj-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent);
+    color: var(--color-cream-50);
+    border: 1px solid var(--accent);
+  }
+  :global([data-theme="dark"]) .btn-primary { color: var(--color-forest-900); }
+  .btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+
+  .btn-ghost {
+    color: var(--text);
+    border: 1px solid var(--border);
+    background-color: transparent;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .proj-stack-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+
+  .stack-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-subtle);
+  }
+
+  .proj-stack-bar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .proj-stack-bar li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .proj-body {
+    margin-block: 2rem 4rem;
+  }
+</style>

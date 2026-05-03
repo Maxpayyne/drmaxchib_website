@@ -1,0 +1,66 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout title={`Tagged: ${tag}`} description={`Posts tagged "${tag}".`}>
+  <article class="tag-page">
+    <header class="page-header">
+      <div class="container-narrow">
+        <p class="eyebrow"><a href="/blog" class="back-link">← Writing</a></p>
+        <h1>
+          Tagged: <span class="tag-name">{tag}</span>
+        </h1>
+        <p class="lede">{sorted.length} {sorted.length === 1 ? 'post' : 'posts'}</p>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container-narrow">
+        <ul class="post-list">
+          {sorted.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`} class="post-row">
+                <div class="post-row-meta"><FormattedDate date={post.data.pubDate} /></div>
+                <h2 class="post-row-title">{post.data.title}</h2>
+                <p class="post-row-desc">{post.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .page-header { padding-block: clamp(3rem, 8vh, 5rem) 2rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.8125rem; margin: 0 0 1.5rem; }
+  .back-link { color: var(--accent); text-decoration: none; }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 1rem; font-weight: 500; letter-spacing: -0.025em; }
+  .tag-name { color: var(--accent); font-style: italic; }
+  .lede { color: var(--text-muted); margin: 0; }
+  .section { padding-block: 1rem clamp(3rem, 8vh, 6rem); }
+  .post-list { list-style: none; padding: 0; margin: 0; }
+  .post-list li { border-top: 1px solid var(--border); }
+  .post-list li:last-child { border-bottom: 1px solid var(--border); }
+  .post-row { display: block; padding: 1.5rem 0; text-decoration: none; color: inherit; transition: padding 0.2s ease; }
+  .post-row:hover { padding-left: 1rem; }
+  .post-row-meta { font-size: 0.8125rem; color: var(--text-subtle); margin-bottom: 0.5rem; }
+  .post-row-title { font-size: 1.375rem; margin: 0 0 0.5rem; font-weight: 500; }
+  .post-row-desc { color: var(--text-muted); margin: 0; }
+  .post-row:hover .post-row-title { color: var(--accent); }
+</style>

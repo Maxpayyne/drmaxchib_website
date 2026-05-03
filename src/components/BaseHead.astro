@@ -1,0 +1,209 @@
+---
+/**
+ * BaseHead.astro — handles ALL SEO meta automatically.
+ *
+ * Pass in title/description/image and this component generates:
+ *  - <title> and <meta name="description">
+ *  - Canonical URL (uses Astro.site as base)
+ *  - Open Graph tags (Facebook, LinkedIn, iMessage previews)
+ *  - Twitter Card tags
+ *  - JSON-LD structured data (helps Google + AI search engines)
+ *  - Sitemap + RSS auto-discovery links
+ *  - Theme color, favicon, and font preloading
+ *  - Anti-FOUC theme script (sets data-theme before paint)
+ */
+
+import { SITE } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: {
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    author?: string;
+    tags?: string[];
+    section?: string;
+  };
+  noindex?: boolean;
+  canonicalURL?: string; // Override (e.g., for cross-posted articles)
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = SITE.defaultOgImage,
+  article,
+  noindex = false,
+  canonicalURL: canonicalOverride,
+} = Astro.props;
+
+// Construct full title with site name (good for SEO + readability)
+const fullTitle = title ? `${title} — ${SITE.shortTitle}` : SITE.title;
+
+// Canonical URL: use override if provided (cross-posts), otherwise current page
+const canonicalURL = canonicalOverride
+  ? canonicalOverride
+  : new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
+
+// Resolve OG image to absolute URL (required by OG spec)
+const ogImageURL = image.startsWith('http')
+  ? image
+  : new URL(image, Astro.site ?? SITE.url).href;
+
+// JSON-LD structured data — helps Google understand content + AI crawlers
+const isArticle = !!article;
+const structuredData = isArticle
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      description,
+      image: ogImageURL,
+      datePublished: article.publishedTime?.toISOString(),
+      dateModified: (article.modifiedTime ?? article.publishedTime)?.toISOString(),
+      author: {
+        '@type': 'Person',
+        name: article.author ?? SITE.author,
+        url: SITE.url,
+      },
+      publisher: {
+        '@type': 'Person',
+        name: SITE.author,
+        url: SITE.url,
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonicalURL,
+      },
+      keywords: article.tags?.join(', '),
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: SITE.author,
+      url: SITE.url,
+      jobTitle: 'Plant Pathologist & Postdoctoral Research Fellow',
+      affiliation: [
+        {
+          '@type': 'Organization',
+          name: 'USDA Agricultural Research Service',
+          url: 'https://www.ars.usda.gov/',
+        },
+      ],
+      alumniOf: [
+        { '@type': 'CollegeOrUniversity', name: 'University of Wisconsin–Madison' },
+        { '@type': 'CollegeOrUniversity', name: 'University of Arizona' },
+        { '@type': 'CollegeOrUniversity', name: 'University of Benin' },
+      ],
+      sameAs: [
+        'https://www.linkedin.com/in/maxwell-o-chi/',
+      ],
+    };
+---
+
+<!-- ============================================================
+     BASIC META
+     ============================================================ -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={SITE.author} />
+<link rel="canonical" href={canonicalURL} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{!noindex && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
+
+<!-- ============================================================
+     OPEN GRAPH (Facebook, LinkedIn, iMessage, Slack, Discord)
+     ============================================================ -->
+<meta property="og:type" content={isArticle ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE.shortTitle} />
+<meta property="og:title" content={title ?? SITE.title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title ?? SITE.title} />
+<meta property="og:locale" content={SITE.locale} />
+
+{
+  isArticle && article && (
+    <>
+      {article.publishedTime && (
+        <meta property="article:published_time" content={article.publishedTime.toISOString()} />
+      )}
+      {article.modifiedTime && (
+        <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />
+      )}
+      {article.author && <meta property="article:author" content={article.author} />}
+      {article.section && <meta property="article:section" content={article.section} />}
+      {article.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+    </>
+  )
+}
+
+<!-- ============================================================
+     TWITTER CARD
+     ============================================================ -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title ?? SITE.title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+{SITE.twitterHandle && <meta name="twitter:creator" content={SITE.twitterHandle} />}
+
+<!-- ============================================================
+     STRUCTURED DATA (JSON-LD) — boosts Google + AI search rankings
+     ============================================================ -->
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+<!-- ============================================================
+     RSS + SITEMAP DISCOVERY
+     ============================================================ -->
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- ============================================================
+     FAVICON + APP ICONS
+     ============================================================ -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#2f5734" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0e1410" media="(prefers-color-scheme: dark)" />
+
+<!-- ============================================================
+     FONT LOADING — preconnect for speed, swap for no FOIT
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+/>
+
+<!-- ============================================================
+     ANTI-FOUC THEME INIT
+     Runs synchronously before paint to prevent dark/light flash.
+     ============================================================ -->
+<script is:inline>
+  (function () {
+    try {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored ?? (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (_) {
+      /* localStorage may be blocked in some contexts; ignore silently */
+    }
+  })();
+</script>

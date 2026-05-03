@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Not found" description="The page you were looking for doesn't exist." noindex={true}>
+  <section class="not-found">
+    <div class="container-narrow">
+      <p class="code">404</p>
+      <h1>This page wandered off into the silage.</h1>
+      <p class="lede">
+        The URL doesn't match anything I've published. Try the homepage, the
+        writing index, or the projects page.
+      </p>
+      <div class="actions">
+        <a href="/" class="btn-primary">Home</a>
+        <a href="/blog" class="btn-ghost">Writing</a>
+        <a href="/projects" class="btn-ghost">Projects</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    padding-block: clamp(4rem, 15vh, 8rem);
+    text-align: center;
+  }
+
+  .code {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin: 0 0 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    max-width: 22ch;
+    margin-inline: auto;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 50ch;
+    margin: 0 auto 2.5rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-ghost {
+    display: inline-flex;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent);
+    color: var(--color-cream-50);
+    border: 1px solid var(--accent);
+  }
+  :global([data-theme="dark"]) .btn-primary { color: var(--color-forest-900); }
+  .btn-primary:hover { background-color: var(--accent-hover); }
+
+  .btn-ghost {
+    color: var(--text);
+    border: 1px solid var(--border);
+    background-color: transparent;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+</style>

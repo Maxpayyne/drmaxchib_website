@@ -1,0 +1,246 @@
+---
+import { SITE, NAV } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(href + '/');
+}
+---
+
+<header class="site-header">
+  <div class="container-wide flex items-center justify-between gap-4 py-5">
+    <a href="/" class="brand" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Stylised leaf — nods to plant pathology origin -->
+          <path
+            d="M4 20C4 11 11 4 20 4C20 13 13 20 4 20Z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+          <path d="M4 20L14 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="brand-name">
+        <span class="brand-name-full">Dr. Max Chib</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={['nav-link', { 'is-active': isActive(item.href) }]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <ThemeToggle />
+      <button
+        type="button"
+        class="menu-toggle"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        data-menu-toggle
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer (hidden on desktop) -->
+  <div class="mobile-drawer" data-menu-drawer hidden>
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={['mobile-link', { 'is-active': isActive(item.href) }]}
+            >
+              {item.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .brand-mark svg { width: 22px; height: 22px; }
+
+  .brand:hover .brand-mark {
+    transform: rotate(-12deg);
+  }
+
+  .primary-nav ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-link {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background-color: var(--surface);
+  }
+
+  .nav-link.is-active {
+    color: var(--accent);
+    background-color: var(--accent-soft);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .menu-toggle:hover {
+    background-color: var(--surface);
+    border-color: var(--accent);
+  }
+
+  .menu-toggle svg { width: 20px; height: 20px; }
+
+  .mobile-drawer {
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .mobile-drawer[hidden] { display: none; }
+
+  .mobile-drawer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-link {
+    display: block;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .mobile-link:hover { background-color: var(--surface); }
+
+  .mobile-link.is-active {
+    color: var(--accent);
+    background-color: var(--accent-soft);
+  }
+
+  /* Mobile breakpoint */
+  @media (max-width: 768px) {
+    .primary-nav { display: none; }
+    .menu-toggle { display: inline-flex; }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const drawer = document.querySelector<HTMLDivElement>('[data-menu-drawer]');
+
+  toggle?.addEventListener('click', () => {
+    if (!drawer) return;
+    const isHidden = drawer.hasAttribute('hidden');
+    if (isHidden) {
+      drawer.removeAttribute('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+    } else {
+      drawer.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close drawer on navigation
+  drawer?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      drawer.setAttribute('hidden', '');
+      toggle?.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>

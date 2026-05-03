@@ -1,0 +1,79 @@
+---
+/**
+ * ThemeToggle — switches between light/dark/system.
+ * Persists choice in localStorage. Falls back to system preference.
+ * Anti-FOUC script lives in BaseHead.astro.
+ */
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  aria-label="Toggle color theme"
+  data-theme-toggle
+>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .theme-toggle:hover {
+    background-color: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-toggle svg { width: 18px; height: 18px; }
+
+  /* Show sun in dark mode (you'd click it to go to light) */
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+
+  :global([data-theme="dark"]) .icon-sun { display: block; }
+  :global([data-theme="dark"]) .icon-moon { display: none; }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+  btn?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') ?? 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch (_) {
+      // ignore storage errors
+    }
+  });
+
+  // Listen to system theme changes (only if user hasn't explicitly chosen)
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  mql.addEventListener('change', (e) => {
+    try {
+      if (!localStorage.getItem('theme')) {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      }
+    } catch (_) { /* ignore */ }
+  });
+</script>

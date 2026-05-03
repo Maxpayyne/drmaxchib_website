@@ -1,0 +1,137 @@
+---
+import { SITE, SOCIAL } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-wide">
+    <div class="hairline" aria-hidden="true"></div>
+
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <p class="footer-name">{SITE.author}, PhD</p>
+        <p class="footer-tagline">{SITE.tagline}</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <h2>Site</h2>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/research">Research</a></li>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/skills">Skills</a></li>
+          <li><a href="/blog">Writing</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-nav" aria-label="Elsewhere">
+        <h2>Elsewhere</h2>
+        <ul>
+          <li>
+            <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn ↗
+            </a>
+          </li>
+          {SOCIAL.github && (
+            <li>
+              <a href={SOCIAL.github} target="_blank" rel="noopener noreferrer">
+                GitHub ↗
+              </a>
+            </li>
+          )}
+          <li>
+            <a href="/rss.xml">RSS Feed</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {SITE.author}. All rights reserved.</p>
+      <p class="footer-built">
+        Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a> ·
+        Hosted on <a href="https://pages.cloudflare.com" target="_blank" rel="noopener">Cloudflare</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  .hairline { margin-block: 0 3rem; }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-name {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+
+  .footer-tagline {
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 30ch;
+    line-height: 1.5;
+  }
+
+  .footer-nav h2 {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin: 0 0 1rem;
+  }
+
+  .footer-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color 0.2s ease;
+  }
+
+  .footer-nav a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--text-subtle);
+    font-size: 0.875rem;
+  }
+
+  .footer-bottom p { margin: 0; }
+  .footer-built a { color: var(--text-muted); }
+  .footer-built a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+</style>

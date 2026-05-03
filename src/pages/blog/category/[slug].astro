@@ -1,0 +1,89 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+import { BLOG_CATEGORIES } from '../../../consts';
+
+export async function getStaticPaths() {
+  return Object.values(BLOG_CATEGORIES).map((cat) => ({
+    params: { slug: cat.slug },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+const posts = (await getCollection('blog', ({ data }) =>
+  !data.draft && data.category === category.slug,
+)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout
+  title={category.name}
+  description={category.description}
+>
+  <article class="cat-page">
+    <header class="page-header">
+      <div class="container-narrow">
+        <p class="eyebrow reveal">
+          <a href="/blog" class="back-link">← Writing</a>
+        </p>
+        <h1 class="reveal reveal-delay-1">{category.name}</h1>
+        <p class="lede reveal reveal-delay-2">{category.description}</p>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container-narrow">
+        {posts.length === 0 ? (
+          <p class="empty">No posts in this category yet.</p>
+        ) : (
+          <ul class="post-list">
+            {posts.map((post) => (
+              <li>
+                <a href={`/blog/${post.id}`} class="post-row">
+                  <div class="post-row-meta">
+                    <FormattedDate date={post.data.pubDate} />
+                  </div>
+                  <h2 class="post-row-title">{post.data.title}</h2>
+                  <p class="post-row-desc">{post.data.description}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .page-header { padding-block: clamp(3rem, 8vh, 5rem) 2rem; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin: 0 0 1.5rem;
+  }
+  .back-link { color: var(--accent); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 1.5rem;
+  }
+  .lede { font-size: 1.125rem; line-height: 1.55; color: var(--text-muted); max-width: 60ch; margin: 0; }
+  .section { padding-block: 1rem clamp(3rem, 8vh, 6rem); }
+  .empty { color: var(--text-subtle); font-style: italic; padding: 2rem 0; }
+  .post-list { list-style: none; padding: 0; margin: 0; }
+  .post-list li { border-top: 1px solid var(--border); }
+  .post-list li:last-child { border-bottom: 1px solid var(--border); }
+  .post-row { display: block; padding: 1.75rem 0; text-decoration: none; color: inherit; transition: padding 0.2s ease; }
+  .post-row:hover { padding-left: 1rem; }
+  .post-row-meta { font-size: 0.8125rem; color: var(--text-subtle); margin-bottom: 0.5rem; }
+  .post-row-title { font-size: 1.5rem; line-height: 1.2; margin: 0 0 0.5rem; font-weight: 500; color: var(--text); }
+  .post-row-desc { color: var(--text-muted); line-height: 1.5; margin: 0; }
+  .post-row:hover .post-row-title { color: var(--accent); }
+</style>

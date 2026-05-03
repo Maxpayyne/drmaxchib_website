@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const skillCategories = [
+  {
+    name: 'Molecular biology',
+    icon: '🧬',
+    items: [
+      { tool: 'PCR / qPCR', use: 'Pathogen detection, primer design, gene expression quantification' },
+      { tool: 'DNA / RNA / plasmid extraction', use: 'CTAB, kit-based, and metagenomic-grade protocols from complex matrices' },
+      { tool: 'Gel electrophoresis', use: 'Routine fragment verification' },
+      { tool: 'Microbial culturing', use: 'Aseptic technique across fungal and bacterial systems' },
+    ],
+  },
+  {
+    name: 'Sequencing & bioinformatics',
+    icon: '🔬',
+    items: [
+      { tool: 'Oxford Nanopore (MinION / MinKNOW)', use: 'Whole-genome long-read sequencing of Fusarium isolates' },
+      { tool: 'Sanger sequencing (DNA amplicon)', use: 'Targeted gene confirmation' },
+      { tool: 'BLAST · Geneious Prime', use: 'Sequence alignment, gene annotation, primer design' },
+      { tool: 'Porechop · NanoFilt · BioConda', use: 'Long-read QC and pipeline assembly' },
+      { tool: 'antiSMASH', use: 'Secondary metabolite cluster prediction in fungal genomes' },
+      { tool: 'Bash · HPC clusters', use: 'High-throughput pipelines on cloud compute' },
+    ],
+  },
+  {
+    name: 'Imaging & analytical chemistry',
+    icon: '🔭',
+    items: [
+      { tool: 'Microscopy', use: 'Brightfield, fluorescence, confocal — Zeiss LSM 710, Axiozoom, Olympus DP73' },
+      { tool: 'LC-MS/MS · HPLC', use: 'Mycotoxin and metabolite quantification' },
+      { tool: 'ImageJ', use: 'Image quantification for disease severity' },
+    ],
+  },
+  {
+    name: 'Statistics & modeling',
+    icon: '📊',
+    items: [
+      { tool: 'R', use: 'Linear mixed models, ANOVA, multivariate analysis, ggplot2 visualization' },
+      { tool: 'SAS', use: 'Field-trial analysis, agricultural research workflows' },
+      { tool: 'Python', use: 'Bioinformatics scripting, pandas, scikit-learn, data wrangling' },
+      { tool: 'Power BI · QGIS', use: 'Spatial analysis and dashboards' },
+    ],
+  },
+  {
+    name: 'Software & development',
+    icon: '⌨️',
+    items: [
+      { tool: 'Git · GitHub · VS Code', use: 'Version control and reproducible research' },
+      { tool: 'Astro · TypeScript · Tailwind', use: 'This site, and forthcoming web products' },
+      { tool: 'Claude Code · Cursor · Grok', use: 'AI-assisted development for vibe-coded prototypes' },
+      { tool: 'Cloudflare Pages / Workers', use: 'Edge hosting and serverless APIs' },
+    ],
+  },
+  {
+    name: 'Communication & leadership',
+    icon: '🎙️',
+    items: [
+      { tool: 'Scientific writing', use: 'Eight peer-reviewed publications, three more in progress' },
+      { tool: 'Public speaking', use: 'APS, MSA, ISC, Wisconsin Agribusiness Classic, USAID series' },
+      { tool: 'Mentoring', use: 'Undergraduate researchers, MANRRS members, international students' },
+      { tool: 'Cross-functional leadership', use: 'Chair, Plant Pathology Graduate Council; President, UW–Madison MANRRS' },
+    ],
+  },
+];
+---
+
+<Layout
+  title="Skills"
+  description="Research and development tools used by Maxwell O. Chibuogwu, PhD — molecular biology, bioinformatics, statistical modeling, and AI-assisted software development."
+>
+  <article class="skills-page">
+    <header class="page-header">
+      <div class="container-narrow">
+        <p class="eyebrow reveal">Skills</p>
+        <h1 class="reveal reveal-delay-1">
+          Tools I use, and what I use them for.
+        </h1>
+        <p class="lede reveal reveal-delay-2">
+          A working catalogue of laboratory techniques, computational
+          workflows, and software stacks — paired with the actual problems
+          I've reached for them to solve. Updated as the toolkit grows.
+        </p>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container-wide">
+        <div class="categories">
+          {skillCategories.map((cat, i) => (
+            <section class="cat reveal" style={`animation-delay:${0.05 * i}s`}>
+              <header class="cat-header">
+                <span class="cat-icon" aria-hidden="true">{cat.icon}</span>
+                <h2 class="cat-name">{cat.name}</h2>
+              </header>
+              <ul class="skill-list">
+                {cat.items.map((item) => (
+                  <li>
+                    <span class="skill-tool">{item.tool}</span>
+                    <span class="skill-use">{item.use}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .page-header {
+    padding-block: clamp(3rem, 8vh, 5rem) 2rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 1.5rem;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 1.5rem;
+    max-width: 22ch;
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .section { padding-block: clamp(2rem, 5vh, 3rem) clamp(3rem, 8vh, 6rem); }
+
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .cat {
+    padding: 2rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: border-color 0.2s ease;
+  }
+
+  .cat:hover {
+    border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+
+  .cat-icon {
+    font-size: 1.5rem;
+  }
+
+  .cat-name {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .skill-list li {
+    padding: 0.875rem 0;
+    border-bottom: 1px dashed color-mix(in oklab, var(--border) 60%, transparent);
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .skill-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .skill-list li:first-child { padding-top: 0; }
+
+  .skill-tool {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .skill-use {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .categories { grid-template-columns: 1fr; }
+  }
+</style>

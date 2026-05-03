@@ -1,0 +1,156 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Layout from './Layout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { BLOG_CATEGORIES } from '../consts';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const category = BLOG_CATEGORIES[data.category];
+---
+
+<Layout
+  title={data.title}
+  description={data.description}
+  image={data.ogImage}
+  canonicalURL={data.canonicalURL}
+  article={{
+    publishedTime: data.pubDate,
+    modifiedTime: data.updatedDate,
+    author: data.author,
+    tags: data.tags,
+    section: category.name,
+  }}
+>
+  <article class="post">
+    <div class="container-narrow">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/blog">Writing</a>
+        <span aria-hidden="true">→</span>
+        <a href={`/blog/category/${category.slug}`}>{category.name}</a>
+      </nav>
+
+      <header class="post-header reveal">
+        <h1 class="post-title">{data.title}</h1>
+        <p class="post-description">{data.description}</p>
+
+        <div class="post-meta">
+          <FormattedDate date={data.pubDate} />
+          {data.updatedDate && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>Updated <FormattedDate date={data.updatedDate} /></span>
+            </>
+          )}
+          {data.readingTime && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{data.readingTime}</span>
+            </>
+          )}
+        </div>
+
+        {data.tags.length > 0 && (
+          <ul class="post-tags" aria-label="Tags">
+            {data.tags.map((tag) => (
+              <li><a href={`/blog/tag/${tag}`} class="tag">{tag}</a></li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      <div class="hairline reveal reveal-delay-1" aria-hidden="true"></div>
+
+      <div class="post-body prose-editorial reveal reveal-delay-2">
+        <slot />
+      </div>
+
+      <footer class="post-footer">
+        <div class="hairline" aria-hidden="true"></div>
+        <p class="post-byline">
+          Written by <strong>{data.author}</strong>. If you found this useful, share it
+          on <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener">LinkedIn</a>
+          or <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(data.title)}`} target="_blank" rel="noopener">X</a>.
+        </p>
+      </footer>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    padding-block: 3rem 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover { color: var(--accent); }
+
+  .post-header { margin-bottom: 3rem; }
+
+  .post-title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    letter-spacing: -0.025em;
+  }
+
+  .post-description {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+    max-width: 60ch;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: var(--text-subtle);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-tags {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .post-body {
+    margin-block: 3rem;
+  }
+
+  .post-footer {
+    margin-top: 4rem;
+  }
+
+  .post-byline {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    margin-top: 2rem;
+  }
+</style>
