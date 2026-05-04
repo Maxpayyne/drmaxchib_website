@@ -1,0 +1,14 @@
+{
+  "name": "drmaxchibweb",
+  "compatibility_date": "2026-05-04",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "46f6a23ae78843fc8a3fac7eb38053b5"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
