@@ -3,21 +3,13 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
   // CRITICAL for SEO: canonical URL used by sitemap, RSS, and SEO component
   site: 'https://drmaxchib.com',
   trailingSlash: 'never',
-  output: 'server',
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-    imageService: 'compile',
-  }),
- 
+
   integrations: [
     mdx(),
     sitemap({
@@ -27,12 +19,12 @@ export default defineConfig({
     }),
   ],
 
-  image: {
-    responsiveStyles: true,
-  },
-
   vite: {
     plugins: [tailwindcss()],
+  },
+
+  image: {
+    responsiveStyles: true,
   },
 
   build: {
@@ -44,5 +36,4 @@ export default defineConfig({
     prefetchAll: false,
     defaultStrategy: 'hover',
   },
-
 });
