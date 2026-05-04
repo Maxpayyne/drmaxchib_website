@@ -34,5 +34,4 @@ export default defineConfig({
     defaultStrategy: 'hover',
   },
 
-  adapter: cloudflare(),
 });
