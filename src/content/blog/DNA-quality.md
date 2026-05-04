@@ -1,7 +1,7 @@
 ---
 title: 'The True Quality and Quantity of DNA'
 description: 'A description of effective tools in estimating DNA quantity for genomics'
-pubDate: 2026-05-15
+pubDate: 2026-05-03
 author: 'Maxwell O. Chibuogwu PhD'
 category: science
 tags: ['agriculture']
