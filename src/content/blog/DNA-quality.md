@@ -7,7 +7,7 @@ category: science
 tags: ['agriculture']
 featured: false
 draft: false
-
+---
 As a scientist deeply entrenched in the world of molecular biology, I’ve seen firsthand how the tools we choose can make or break our experiments. One such tool, the Nanodrop spectrophotometer, is a mainstay on most lab benches for DNA quantification. But is it always the best choice? Let’s dig into why I believe a more careful approach is warranted.
 
 ## The Allure (and Pitfalls) of Nanodrop
@@ -32,4 +32,3 @@ Accurate DNA quantification isn’t just a technical detail, it’s a cornerston
 As researchers, it’s our responsibility to look past what’s easy and focus on what’s accurate. Tools like Qubit help ensure our data stands up to scrutiny and that our findings are built on a solid foundation. While the nanodrop would provide information about DNA quality (260/280, 260/230 ratios) information that the Qubit does not provide. Using both tools in synergy is the optimal approach I recommend - Qubit for quantity and Nanodrop for quality.
 
 _Prioritizing data integrity is always worth the extra step._
----
