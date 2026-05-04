@@ -9,6 +9,7 @@ import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
   // CRITICAL for SEO: canonical URL used by sitemap, RSS, and SEO component
+  output: 'static',
   site: 'https://drmaxchib.com',
 
   trailingSlash: 'never',

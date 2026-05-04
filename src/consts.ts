@@ -4,7 +4,7 @@
 
 export const SITE = {
   title: 'Maxwell O. Chibuogwu, PhD',
-  shortTitle: 'Dr. Max Chib',
+  shortTitle: 'Dr. Maxwell O. Chibuogwu',
   tagline: 'Plant pathologist building AI tools for African agriculture.',
   description:
     'Maxwell O. Chibuogwu, PhD — USDA postdoctoral fellow, plant pathologist, and founder of RethinkNaija. Writing on agricultural science, AI for Africa, and civic technology.',
@@ -12,7 +12,7 @@ export const SITE = {
   author: 'Maxwell O. Chibuogwu',
   authorTitle: 'PhD, Plant Pathology',
   locale: 'en_US',
-  twitterHandle: '', // Add @handle when active
+  twitterHandle: '@drmaxchib', // Add @handle when active
   // Default Open Graph image (1200x630 PNG, lives in /public/og-default.png)
   defaultOgImage: '/og-default.png',
 } as const;

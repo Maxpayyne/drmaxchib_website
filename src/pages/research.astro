@@ -231,6 +231,22 @@ import Layout from '../layouts/Layout.astro';
               Poster: <em>Draft genome sequence and de novo assembly of
               mycotoxin-producing</em> Fusarium cerealis <em>isolate associated
               with ear rot of silage corn</em>.
+              <a href="/images/msa-poster.png" target="_blank" rel="noopener" class="poster-link">
+                View poster ↗
+              </a>
+              <figure class="poster-preview">
+                <a href="/images/msa-poster.png" target="_blank" rel="noopener">
+                  <img
+                    src="/images/msa-poster.png"
+                    alt="MSA 2025 poster: Draft Genome Sequence of Fusarium cerealis"
+                    loading="lazy"
+                    width="900"
+                  />
+                </a>
+                <figcaption>
+                  MSA Annual Conference 2025 — click to view full resolution.
+                </figcaption>
+              </figure>
             </dd>
           </div>
           <div>
@@ -420,6 +436,41 @@ import Layout from '../layouts/Layout.astro';
     margin: 0;
     color: var(--text);
     line-height: 1.6;
+  }
+
+  .poster-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+  .poster-link:hover { text-decoration: underline; }
+
+  .poster-preview {
+    margin: 1.25rem 0 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    max-width: 700px;
+  }
+
+  .poster-preview img {
+    width: 100%;
+    display: block;
+    transition: opacity 0.2s ease;
+  }
+
+  .poster-preview a:hover img { opacity: 0.92; }
+
+  .poster-preview figcaption {
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    font-style: italic;
+    background-color: var(--surface);
+    text-align: center;
   }
 
   @media (max-width: 768px) {

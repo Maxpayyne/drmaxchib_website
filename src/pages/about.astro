@@ -26,6 +26,22 @@ import { SOCIAL } from '../consts';
       </div>
     </header>
 
+    <!-- Hero photo -->
+    <div class="about-hero-photo reveal reveal-delay-3">
+      <div class="container-wide">
+        <figure class="hero-fig">
+          <img
+            src="/images/grad-uw2024.jpg"
+            alt="Maxwell O. Chibuogwu in doctoral regalia in front of UW-Madison 2024 sculpture"
+            width="1400"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>PhD graduation, University of Wisconsin–Madison, May 2024.</figcaption>
+        </figure>
+      </div>
+    </div>
+
     <!-- ============================================================
          BIO — THE SCIENTIST
          ============================================================ -->
@@ -41,6 +57,16 @@ import { SOCIAL } from '../consts';
           North America. I defended my dissertation in August 2024 with a
           3.94 GPA and a stack of publications I'm still proud of.
         </p>
+
+        <figure class="inline-fig inline-fig-right">
+          <img
+            src="/images/grad-dock.jpg"
+            alt="Maxwell Chibuogwu in doctoral regalia"
+            width="500"
+            loading="lazy"
+          />
+          <figcaption>Bascom Hill, Madison. May 2024 Graduation.</figcaption>
+        </figure>
 
         <p>
           Today I'm an ORISE postdoctoral fellow at the
@@ -133,18 +159,36 @@ import { SOCIAL } from '../consts';
           <div>
             <dt>Doctorate</dt>
             <dd>
-              PhD, Plant Pathology, University of Wisconsin–Madison
-              (3.94 / 4.0). Dissertation on integrated management of
-              <em>Gibberella</em> diseases and DON in silage corn.
-              Major advisor: <a href="https://badgercropdoc.com/" target="_blank" rel="noopener">Damon L. Smith</a>.
+              <div class="edu-entry">
+                <img src="/images/logos/uw-madison.png" alt="University of Wisconsin–Madison crest" class="edu-logo" />
+                <div>
+                  <strong>University of Wisconsin–Madison</strong><br/>
+                  PhD, Plant Pathology (3.94 / 4.0) · 2018–2024<br/>
+                  Dissertation on integrated management of <em>Gibberella</em> diseases
+                  and DON in silage corn.
+                  Major advisor: <a href="https://badgercropdoc.com/" target="_blank" rel="noopener">Damon L. Smith</a>.
+                </div>
+              </div>
             </dd>
           </div>
           <div>
             <dt>Earlier training</dt>
             <dd>
-              Master's-level coursework in molecular plant pathology at the
-              University of Arizona. BSc <em>summa cum laude</em> in Plant
-              Biology and Biotechnology, University of Benin.
+              <div class="edu-entry">
+                <img src="/images/logos/u-arizona.svg" alt="University of Arizona" class="edu-logo" />
+                <div>
+                  <strong>University of Arizona</strong><br/>
+                  Graduate studies in molecular plant pathology &amp; plant virology · 2016–2018<br/>
+                  Brown Lab — palo verde witches' broom emaravirus and eriophyid mite vectors.
+                </div>
+              </div>
+              <div class="edu-entry" style="margin-top:1.25rem">
+                <img src="/images/logos/uniben.png" alt="University of Benin" class="edu-logo" />
+                <div>
+                  <strong>University of Benin</strong><br/>
+                  BSc <em>(First Class) or summa cum laude</em>, Plant Biology &amp; Biotechnology · 2010–2015
+                </div>
+              </div>
             </dd>
           </div>
           <div>
@@ -163,14 +207,35 @@ import { SOCIAL } from '../consts';
               farmers. Brand: <em>RethinkNaija</em> (forthcoming).
             </dd>
           </div>
-          <div>
+          <div class="glance-awards">
             <dt>Recognized for</dt>
             <dd>
-              1st place, MANRRS Region V Business Pitch Contest 2023 ($12,000
-              Draper University award) · American Farm Bureau Federation
-              Fellowship (2023) · I.E. Melhus Graduate Symposium Award (2023)
-              · Best Lightning Talk, 12th Plant Sciences Symposium (2022)
-              · Multiple departmental fellowships and travel grants.
+              <p>1st place, MANRRS Region V Business Pitch Contest 2023 —
+              a $12,000 scholarship to the Draper University Summer Entrepreneurship
+              Bootcamp in Silicon Valley, where Team Lightning went on to win the
+              programme-wide competition out of ~10 teams.
+              Also: American Farm Bureau Federation Fellowship (2023) ·
+              I.E. Melhus Graduate Symposium Award (2023) · Best Lightning Talk,
+              12th Plant Sciences Symposium (2022) · Multiple departmental
+              fellowships and travel grants.</p>
+              <div class="award-photos award-photos-4">
+                <figure>
+                  <img src="/images/manrrs-award.jpg" alt="Receiving MANRRS Region V pitch contest award" loading="lazy" />
+                  <figcaption>MANRRS Region V Pitch Contest — 1st place, 2023</figcaption>
+                </figure>
+                <figure>
+                  <img src="/images/manrrs-national.jpg" alt="MANRRS national conference award" loading="lazy" />
+                  <figcaption>MANRRS national conference award</figcaption>
+                </figure>
+                <figure>
+                  <img src="/images/draper-capes.jpg" alt="Team Lightning at Draper University, Silicon Valley — Maxwell's cape reads 'Captain Future'" loading="lazy" />
+                  <figcaption>Draper University, Silicon Valley — Team Lightning. Cape: <em>Captain Future</em>.</figcaption>
+                </figure>
+                <figure>
+                  <img src="/images/draper-team.jpg" alt="Team Lightning winning the Draper University competition" loading="lazy" />
+                  <figcaption>Team Lightning — 1st place, Draper University Bootcamp 2023</figcaption>
+                </figure>
+              </div>
             </dd>
           </div>
           <div>
@@ -521,6 +586,143 @@ import { SOCIAL } from '../consts';
   /* ============================================================
      RESPONSIVE
      ============================================================ */
+  /* ============================================================
+     HERO PHOTO
+     ============================================================ */
+  .about-hero-photo {
+    margin-block: 2rem 0;
+  }
+
+  .hero-fig {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    max-height: 540px;
+  }
+
+  .hero-fig img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+  }
+
+  .hero-fig figcaption {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    font-style: italic;
+    background-color: var(--surface);
+    text-align: center;
+  }
+
+  /* ============================================================
+     INLINE FLOATED FIGURE
+     ============================================================ */
+  .inline-fig {
+    margin: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .inline-fig img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .inline-fig figcaption {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    font-style: italic;
+    background-color: var(--surface);
+    text-align: center;
+  }
+
+  .inline-fig-right {
+    float: right;
+    width: 38%;
+    margin: 0.5rem 0 1.5rem 2rem;
+  }
+
+  /* ============================================================
+     EDUCATION ENTRIES WITH LOGOS
+     ============================================================ */
+  .edu-entry {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+
+  .edu-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    object-position: center;
+    flex-shrink: 0;
+    border-radius: 4px;
+  }
+
+  .edu-logo-svg {
+    flex-shrink: 0;
+    display: block;
+    width: 120px;
+  }
+
+  .edu-logo-svg svg {
+    width: 120px;
+    height: 36px;
+    border-radius: 4px;
+    display: block;
+  }
+
+  /* ============================================================
+     AWARD PHOTOS GRID
+     ============================================================ */
+  .award-photos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .award-photos-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .award-photos figure {
+    margin: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .award-photos img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  .award-photos figcaption {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.75rem;
+    color: var(--text-subtle);
+    font-style: italic;
+    background-color: var(--surface);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
   @media (max-width: 768px) {
     .glance-list > div {
       grid-template-columns: 1fr;
@@ -532,6 +734,32 @@ import { SOCIAL } from '../consts';
     }
     .press-source {
       grid-column: 1 / -1;
+    }
+    .inline-fig-right {
+      float: none;
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+    .award-photos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .award-photos-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .edu-entry {
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .edu-logo-svg {
+      width: 100px;
+    }
+
+    .edu-logo-svg svg {
+      width: 100px;
+      height: 30px;
     }
   }
 </style>

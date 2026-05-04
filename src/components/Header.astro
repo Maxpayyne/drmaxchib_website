@@ -14,19 +14,11 @@ function isActive(href: string): boolean {
   <div class="container-wide flex items-center justify-between gap-4 py-5">
     <a href="/" class="brand" aria-label="Home">
       <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Stylised leaf — nods to plant pathology origin -->
-          <path
-            d="M4 20C4 11 11 4 20 4C20 13 13 20 4 20Z"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linejoin="round"
-          />
-          <path d="M4 20L14 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-        </svg>
+        <img src="/images/logo.png" alt="" width="36" height="36" class="brand-logo" />
       </span>
       <span class="brand-name">
-        <span class="brand-name-full">Dr. Max Chib</span>
+        <span class="brand-name-short">Dr. Max</span>
+        <span class="brand-name-full">Dr. Maxwell O. Chibuogwu</span>
       </span>
     </a>
 
@@ -109,16 +101,29 @@ function isActive(href: string): boolean {
   .brand-mark {
     display: grid;
     place-items: center;
-    width: 32px;
-    height: 32px;
-    color: var(--accent);
+    width: 36px;
+    height: 36px;
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .brand-mark svg { width: 22px; height: 22px; }
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+  }
 
   .brand:hover .brand-mark {
-    transform: rotate(-12deg);
+    transform: rotate(-8deg) scale(1.05);
+  }
+
+  /* Show short name on narrow screens, full name on wide */
+  .brand-name-short { display: none; }
+  .brand-name-full { display: inline; }
+
+  @media (max-width: 900px) {
+    .brand-name-short { display: inline; }
+    .brand-name-full { display: none; }
   }
 
   .primary-nav ul {
