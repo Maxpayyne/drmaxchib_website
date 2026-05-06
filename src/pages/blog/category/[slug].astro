@@ -4,6 +4,8 @@ import FormattedDate from '../../../components/FormattedDate.astro';
 import { getCollection } from 'astro:content';
 import { BLOG_CATEGORIES } from '../../../consts';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   return Object.values(BLOG_CATEGORIES).map((cat) => ({
     params: { slug: cat.slug },

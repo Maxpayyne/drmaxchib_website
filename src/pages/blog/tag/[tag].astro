@@ -3,6 +3,8 @@ import Layout from '../../../layouts/Layout.astro';
 import FormattedDate from '../../../components/FormattedDate.astro';
 import { getCollection } from 'astro:content';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
