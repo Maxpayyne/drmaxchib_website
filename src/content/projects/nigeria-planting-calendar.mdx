@@ -1,0 +1,57 @@
+---
+title: 'Nigeria Crop Planting Calendar — Interactive State Map'
+description: 'Click any Nigerian state to see optimal planting windows for maize, cassava, yam, sorghum, and rice. Agronomic timing data for smallholder farmers.'
+pubDate: 2026-05-04
+category: 'civic'
+status: 'in-progress'
+stack: ['Astro', 'TypeScript', 'SVG', 'Tailwind', 'Cloudflare Pages']
+tags: ['nigeria', 'agriculture', 'civic-tech', 'planting-calendar', 'farmers']
+featured: true
+order: 2
+---
+
+import NigeriaPlantingMap from '../../components/NigeriaPlantingMap.astro';
+
+## Try it — click a state
+
+<NigeriaPlantingMap />
+
+## The problem
+
+Nigerian smallholder farmers make planting decisions without access to state-specific agronomic guidance. The information exists sparsely in academic papers, crop calendars, and extension bulletins — but even then, it is not accessible in a format that a farmer, extension agent, or agricultural student can quickly consult.
+
+This project makes that information interactive: click a state on a map of Nigeria, see the recommended planting windows for the five most economically significant crops, with notes on regional climate context.
+
+## Why these seven crops
+
+**Maize (corn)** is Nigeria's most widely grown cereal, consumed directly and as the dominant ingredient in poultry feed. Production is concentrated in the Middle Belt and North but occurs in all regions.
+
+**Cassava** is the country's highest-volume crop by tonnage. Nigeria is the world's largest producer. It tolerates poor soils and irregular rainfall, making it the baseline food security crop across the South and parts of the Middle Belt.
+
+**Yam** (*Dioscorea* spp.) — Nigeria produces over 70% of global yam supply. It is culturally significant well beyond its nutritional role, particularly in the Southeast and Middle Belt.
+
+**Sorghum** is Nigeria's third-largest cereal by production volume and the dominant staple in the dry North, where rainfall is insufficient for maize. It is drought-tolerant and critical to food security in states like Kano, Katsina, Borno, and Yobe.
+
+**Rice** has become a priority crop as Nigerian federal policy pushes for import substitution. Both upland and lowland (irrigated) varieties are grown, with planting windows that differ significantly by ecology.
+
+**Groundnut** (*Arachis hypogaea*) — known locally as groundnut, this is Nigeria's most important legume crop by production volume and a critical source of dietary protein and cooking oil in the North. Nigeria was once the world's leading groundnut exporter. The Northern states — particularly Kano, Katsina, Sokoto, and Kaduna — remain the primary production zones.
+
+**Cowpea** (*Vigna unguiculata*) — called beans across Nigeria and eaten daily in virtually every household, cowpea is the country's most important food legume. Nigeria is the world's largest producer and consumer. It is drought-tolerant, fixes atmospheric nitrogen making it valuable in rotation, and is grown across all ecological zones — both as a sole crop and intercropped with maize, sorghum, and yam.
+
+## The data
+
+Planting windows are derived from agronomic research, crop calendar data for Nigeria, and peer-reviewed literature on sowing date optimization. Nigeria's diverse ecology — from the Sahel in the far north to tropical rainforest in the south — means that planting windows vary by up to three months between the northernmost and southernmost states.
+
+The country is grouped into five agroecological zones for calendar purposes:
+
+- **Sahel/Sudan Savanna** (Borno, Yobe, Jigawa, Kano, Katsina, Sokoto, Zamfara, Kebbi)
+- **Guinea Savanna** (Niger, Kaduna, FCT, Kwara, Kogi, Nasarawa, Plateau, Taraba, Adamawa)
+- **Derived Savanna / Middle Belt** (Benue, Niger, Kwara)
+- **Forest-Savanna Transition** (Oyo, Ogun, Ondo, Ekiti, Osun, Lagos, Edo, Delta, Anambra, Enugu)
+- **Rainforest / South** (Rivers, Bayelsa, Cross River, Akwa Ibom, Imo, Abia)
+
+## Status
+
+The interactive map is in development. The first version will be a static SVG map of Nigeria's 36 states + FCT with click-to-reveal planting windows. Future versions will layer in city-level data, rainfall probability by week, and SMS delivery.
+
+If you work in Nigerian agriculture — as a researcher, extension agent, or farmer — I'd like to hear what data would be most useful to you.

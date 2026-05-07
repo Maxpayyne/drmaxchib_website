@@ -6,9 +6,10 @@ const skillCategories = [
     name: 'Molecular biology',
     icon: '🧬',
     items: [
+      { tool: 'DNA / RNA / plasmid extraction', use: 'Kit-based, CTAB, and metagenomic-grade protocols to obtain HMW DNA from complex matrices' },
       { tool: 'PCR / qPCR', use: 'Pathogen detection, primer design, gene expression quantification' },
-      { tool: 'DNA / RNA / plasmid extraction', use: 'CTAB, kit-based, and metagenomic-grade protocols from complex matrices' },
       { tool: 'Gel electrophoresis', use: 'Routine fragment verification' },
+      { tool: 'Bioanalyzer / Femtopulse', use: 'Routine fragment verification (size and length)' },
       { tool: 'Microbial culturing', use: 'Aseptic technique across fungal and bacterial systems' },
     ],
   },
@@ -25,12 +26,33 @@ const skillCategories = [
     ],
   },
   {
+    name: 'Communication & leadership',
+    icon: '🎙️',
+    items: [
+      { tool: 'Scientific writing', use: 'Eight peer-reviewed publications, three more in progress' },
+      { tool: 'Public speaking', use: 'APS, MSA, ISC, ISS Graduation Speaker, Wisconsin Agribusiness Classic, USAID series' },
+      { tool: 'Mentoring', use: 'Undergraduate researchers, MANRRS members, international students' },
+      { tool: 'Cross-functional leadership', use: 'Chair, Plant Pathology Graduate Council; President, UW–Madison MANRRS' },
+    ],
+  },
+  {
+    name: 'Field disease scouting & rating',
+    icon: '🌽',
+    items: [
+      { tool: 'Above-ground disease rating — foliar', use: 'Visual assessment and quantification of foliar diseases (tar spot, northern corn leaf blight, gray leaf spot) in corn and soybean using standard area diagrams' },
+      { tool: 'Above-ground disease rating — stalk & ear', use: 'Gibberella and Diplodia ear rot severity rating; stalk rot assessment via push and pinch tests; lodging percentage quantification across plots' },
+      { tool: 'Below-ground disease scouting', use: 'Root disease assessment in corn and soybean — crown rot, root rot complexes, nodulation quality in soybean; core sampling and washing protocols' },
+      { tool: 'Plot management & trial execution', use: 'Management of replicated field trials from planting to harvest — plot marking, treatment application, stand counts, growth stage staging (V/R scale for corn, Fehr-Caviness for soybean)' },
+      { tool: 'Disease severity data collection', use: 'Systematic scouting protocols, APS-standard rating scales, GPS-referenced sampling grids, data entry into REDCap and custom spreadsheet templates' },
+    ],
+  },
+  {
     name: 'Imaging & analytical chemistry',
     icon: '🔭',
     items: [
       { tool: 'Microscopy', use: 'Brightfield, fluorescence, confocal — Zeiss LSM 710, Axiozoom, Olympus DP73' },
       { tool: 'LC-MS/MS · HPLC', use: 'Mycotoxin and metabolite quantification' },
-      { tool: 'ImageJ', use: 'Image quantification for disease severity' },
+      {tool: 'GC-MS/MS', use: 'Volatile organic compounds (VOCs) detection from plant and microbial sources' },
     ],
   },
   {
@@ -40,7 +62,8 @@ const skillCategories = [
       { tool: 'R', use: 'Linear mixed models, ANOVA, multivariate analysis, ggplot2 visualization' },
       { tool: 'SAS', use: 'Field-trial analysis, agricultural research workflows' },
       { tool: 'Python', use: 'Bioinformatics scripting, pandas, scikit-learn, data wrangling' },
-      { tool: 'Power BI · QGIS', use: 'Spatial analysis and dashboards' },
+      { tool: 'Power BI · QGIS', use: 'Spatial analysis, mapping and dashboards' },
+      { tool: 'ImageJ', use: 'Image analysis for disease severity, colony counting, pixel thresholds' },
     ],
   },
   {
@@ -51,16 +74,6 @@ const skillCategories = [
       { tool: 'Astro · TypeScript · Tailwind', use: 'This site, and forthcoming web products' },
       { tool: 'Claude Code · Cursor · Grok', use: 'AI-assisted development for vibe-coded prototypes' },
       { tool: 'Cloudflare Pages / Workers', use: 'Edge hosting and serverless APIs' },
-    ],
-  },
-  {
-    name: 'Communication & leadership',
-    icon: '🎙️',
-    items: [
-      { tool: 'Scientific writing', use: 'Eight peer-reviewed publications, three more in progress' },
-      { tool: 'Public speaking', use: 'APS, MSA, ISC, Wisconsin Agribusiness Classic, USAID series' },
-      { tool: 'Mentoring', use: 'Undergraduate researchers, MANRRS members, international students' },
-      { tool: 'Cross-functional leadership', use: 'Chair, Plant Pathology Graduate Council; President, UW–Madison MANRRS' },
     ],
   },
 ];
