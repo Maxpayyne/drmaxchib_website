@@ -1,0 +1,39 @@
+---
+title: 'Corn Disease Risk Dashboard — Prairie du Sac'
+description: 'Daily corn disease risk for the US Dairy Forage Research Center — Webster tar spot ensemble, Gibberella and Fusarium ear rot, on-farm scouting overlay.'
+pubDate: 2026-06-06
+category: 'pet'
+status: 'in-progress'
+stack: ['Astro', 'Python', 'Open-Meteo', 'Chart.js', 'GitHub Actions', 'Cloudflare Pages']
+tags: ['plant-pathology', 'corn', 'silage', 'epidemiology', 'mycotoxin', 'dashboard']
+featured: false
+order: 1
+---
+
+import CornDashboard from '../../components/CornDashboard.astro';
+
+<CornDashboard />
+
+## What this is
+
+A live dashboard tracking the risk of five priority corn diseases at the US Dairy Forage Research Center farm in Prairie du Sac, Wisconsin, with Arlington ARS and Marshfield ARS as comparison sites. Each morning a GitHub Action pulls fresh hourly weather from Open-Meteo (ERA5 reanalysis archive plus 16-day forecast), runs published disease risk models, and commits per-site, per-year JSON back to this repo. Cloudflare Pages picks up the commit and rebuilds the site automatically. No backend, no API keys, no running cost beyond the hosting that already exists.
+
+## Models
+
+The headline tar spot risk is the published Webster et al. (2023) logistic regression ensemble — the average of their LR4 and LR6 models — which is the same family of models behind UW Madison's Tarspotter app. The paper validates it at 87.4% accuracy and a kappa of 0.61 on the 35% risk threshold. Counterintuitively, all coefficients are negative: moderate temperatures of 18 to 23 °C drive tar spot while extended periods of high humidity are actually antagonistic, consistent with the controlled-environment work of Breunig et al. (2023). The dashboard masks risk values outside the agronomic validity window — from thirty days before silking through roughly black layer plus dry-down — to avoid the model's known instability at the season edges.
+
+Gibberella and Fusarium ear rot conduciveness use the thresholds reviewed by Munkvold (2003) and consistent with Reid et al. (1999). Gibberella conducive days require daily mean temperature at or above 15 °C with mean RH at or above 80%, with a stricter 90% variant tracked alongside. Fusarium conducive days fall between 20 and 35 °C with RH at or above 70%. Both are summed inside the silking window in addition to the seasonal total, because the agronomically meaningful number is not "total conducive days in the season" but conducive days during the period the ear is actually susceptible to infection through the silks.
+
+Southern rust as an arrival tracker plus local conduciveness index, and a mycotoxin composite weighted by the silking window and informed by on-farm scouting, are both queued for the next layer.
+
+## The silking window
+
+The dashboard computes the silking window dynamically from planting date using growing degree days (base 10 °C, cap 30 °C — the NCGA modified method), with 778 GDD °C (about 1400 GDD °F) marking R1 for full-season silage hybrids. The susceptibility window is taken as R1 minus three days through R1 plus eighteen days. When no planting date has been supplied, the pipeline falls back to the literature default of day-of-year 200 to 220 for southern Wisconsin and labels itself as such on the dashboard.
+
+## Scouting overlay
+
+The 2025 overlay reads from a workbook of point-level southern rust severity ratings by leaf position (ear leaf, ear leaf minus one, ear leaf plus one) collected at DFRC fields 3300 and 8710 on August 26 and September 5 — the same data feeding a parallel hyperspectral discrimination study. Aggregated to the field-date level on the dashboard so the model's predicted risk and the actual observed disease can be compared at a glance.
+
+## Status
+
+Version one ships Prairie du Sac with tar spot and ear rot models plus the 2025 scouting overlay. Arlington and Marshfield comparison views, the southern rust arrival tracker, and the mycotoxin composite are queued.

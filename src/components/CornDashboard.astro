@@ -1,0 +1,521 @@
+---
+// src/components/CornDashboard.astro
+//
+// Interactive corn disease risk dashboard. Imported from the
+// corn-dashboard.mdx content entry and rendered inside the standard
+// project detail chrome (Layout → container-narrow → prose-editorial).
+//
+// All site-year JSON is imported at build time via import.meta.glob
+// from src/data/corn-dashboard/. Files in public/ are not visible to
+// Vite globs — that's why the data lives in src/.
+//
+// All theming uses the existing tokens from src/styles/global.css
+// (--bg-elevated, --surface, --surface-2, --border, --text,
+// --text-muted, --accent, --accent-soft). Light and dark mode flip
+// automatically with [data-theme] on <html>.
+
+const siteYears = import.meta.glob('../data/corn-dashboard/*.json', { eager: true });
+
+const datasets: Record<string, any> = {};
+let indexData: any[] = [];
+for (const [path, mod] of Object.entries(siteYears)) {
+  const fname = path.split('/').pop()!;
+  const payload = (mod as any).default ?? mod;
+  if (fname === 'index.json') {
+    indexData = Array.isArray(payload) ? payload : [];
+  } else {
+    datasets[fname.replace('.json', '')] = payload;
+  }
+}
+
+const sites = Array.from(new Set(indexData.map((r: any) => r.site))).map((code: string) => {
+  const r = indexData.find((x: any) => x.site === code);
+  return { code, name: r?.site_name ?? code };
+});
+const years = Array.from(new Set(indexData.map((r: any) => r.year))).sort(
+  (a: number, b: number) => b - a
+);
+const defaultSite = sites.find((s) => s.code === 'pds') ? 'pds' : sites[0]?.code ?? '';
+const defaultYear = years[0] ?? new Date().getFullYear();
+const hasData = indexData.length > 0;
+---
+
+<div class="cd-wrap">
+  {hasData ? (
+    <>
+      <div class="cd-controls" role="group" aria-label="Dashboard filters">
+        <label class="cd-control">
+          <span>Site</span>
+          <select id="cd-site">
+            {sites.map((s) => (
+              <option value={s.code} selected={s.code === defaultSite}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label class="cd-control">
+          <span>Year</span>
+          <select id="cd-year">
+            {years.map((y) => (
+              <option value={y} selected={y === defaultYear}>
+                {y}{y === new Date().getFullYear() ? ' · live' : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <section class="cd-cards" aria-label="Disease risk summary">
+        <article class="cd-card">
+          <h3>Tar spot</h3>
+          <p class="cd-bignum" id="cd-tarspot-peak">—</p>
+          <p class="cd-cardmeta">peak risk · <span id="cd-tarspot-days">—</span> d ≥ 35%</p>
+          <p class="cd-srcite">Webster 2023 ensemble</p>
+        </article>
+        <article class="cd-card">
+          <h3>Gibberella ear rot</h3>
+          <p class="cd-bignum" id="cd-ger-days">—</p>
+          <p class="cd-cardmeta">conducive days · <span id="cd-ger-silk">—</span> in silking</p>
+          <p class="cd-srcite">T ≥ 15 °C, RH ≥ 80 %</p>
+        </article>
+        <article class="cd-card">
+          <h3>Fusarium ear rot</h3>
+          <p class="cd-bignum" id="cd-fer-days">—</p>
+          <p class="cd-cardmeta">conducive days · <span id="cd-fer-silk">—</span> in silking</p>
+          <p class="cd-srcite">20–35 °C, RH ≥ 70 %</p>
+        </article>
+        <article class="cd-card cd-card-soft">
+          <h3>Southern rust</h3>
+          <p class="cd-bignum">v1.1</p>
+          <p class="cd-cardmeta">arrival + local conduciveness</p>
+          <p class="cd-srcite">queued</p>
+        </article>
+        <article class="cd-card cd-card-soft">
+          <h3>Mycotoxin risk</h3>
+          <p class="cd-bignum">v1.1</p>
+          <p class="cd-cardmeta">silking-weighted composite</p>
+          <p class="cd-srcite">queued</p>
+        </article>
+      </section>
+
+      <section class="cd-chart-section">
+        <div class="cd-chart-head">
+          <h3>Seasonal timeline</h3>
+          <div class="cd-legend" id="cd-legend"></div>
+        </div>
+        <div class="cd-chart-wrap">
+          <canvas
+            id="cd-chart"
+            role="img"
+            aria-label="Daily temperature, relative humidity, and disease risk indices for the selected site and year, with the silking window highlighted."
+          >
+            Daily temperature, RH, and disease risk indices for the selected site-year.
+          </canvas>
+        </div>
+        <p class="cd-chart-note" id="cd-silking-note"></p>
+      </section>
+
+      <section class="cd-bottom">
+        <article class="cd-panel" id="cd-scouting-panel">
+          <h3>Scouting observations</h3>
+          <div id="cd-scouting-body">
+            <p class="cd-muted">No on-farm scouting recorded for the selected site-year.</p>
+          </div>
+        </article>
+        <article class="cd-panel">
+          <h3>Site &amp; data</h3>
+          <dl class="cd-defs">
+            <dt>Location</dt><dd id="cd-meta-site">—</dd>
+            <dt>Year</dt><dd id="cd-meta-year">—</dd>
+            <dt>Weather source</dt><dd id="cd-meta-source">—</dd>
+            <dt>Planting</dt><dd id="cd-meta-planting">—</dd>
+            <dt>Silking</dt><dd id="cd-meta-silking">—</dd>
+            <dt>Generated</dt><dd id="cd-meta-generated">—</dd>
+          </dl>
+        </article>
+      </section>
+    </>
+  ) : (
+    <div class="cd-empty">
+      <p>
+        No dashboard data is committed yet at <code>src/data/corn-dashboard/</code>. Run the
+        pipeline once (see <code>tools/corndash/README.md</code>) and rebuild.
+      </p>
+    </div>
+  )}
+</div>
+
+{hasData && (
+  <>
+    <script id="cd-data" type="application/json" is:inline set:html={JSON.stringify(datasets)} />
+    <script id="cd-index" type="application/json" is:inline set:html={JSON.stringify(indexData)} />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" is:inline />
+    <script is:inline>
+      (function () {
+        const datasets = JSON.parse(document.getElementById('cd-data').textContent);
+        const siteSel = document.getElementById('cd-site');
+        const yearSel = document.getElementById('cd-year');
+        let chart = null;
+
+        // Chart palette: pulls site tokens for muted UI; uses dedicated
+        // chart colors for series so they remain distinguishable across
+        // both themes.
+        function tok(name, fallback) {
+          try {
+            const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+            return v || fallback;
+          } catch (_) { return fallback; }
+        }
+        function chartColors() {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          return {
+            temp: isDark ? '#e88c7a' : '#c05a3f',
+            rh:   isDark ? '#7aa6e8' : '#3a6ca6',
+            risk: isDark ? '#fbbf24' : '#d97706',
+            cond: tok('--accent', isDark ? '#8eb190' : '#2f5734'),
+            muted: tok('--text-muted', '#6b6b66'),
+            grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)',
+          };
+        }
+
+        function fmtPct(x) { return x == null ? '—' : Math.round(x * 100) + '%'; }
+        function fmtDate(s) {
+          if (!s) return '—';
+          const d = new Date(s);
+          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        function setText(id, value) {
+          const el = document.getElementById(id);
+          if (el) el.textContent = value == null || value === '' ? '—' : value;
+        }
+
+        function render() {
+          const key = siteSel.value + '_' + yearSel.value;
+          const d = datasets[key];
+          if (!d) {
+            ['cd-tarspot-peak','cd-tarspot-days','cd-ger-days','cd-ger-silk',
+             'cd-fer-days','cd-fer-silk','cd-meta-site','cd-meta-year',
+             'cd-meta-source','cd-meta-planting','cd-meta-silking','cd-meta-generated']
+              .forEach(id => setText(id, '—'));
+            document.getElementById('cd-silking-note').textContent =
+              'No data available for ' + siteSel.value + ' ' + yearSel.value + '.';
+            if (chart) { chart.destroy(); chart = null; }
+            document.getElementById('cd-scouting-body').innerHTML =
+              '<p class="cd-muted">No data available for this site-year.</p>';
+            return;
+          }
+
+          setText('cd-tarspot-peak', fmtPct(d.summary.tarspot_peak_risk));
+          setText('cd-tarspot-days', d.summary.tarspot_days_above_threshold ?? 0);
+          setText('cd-ger-days', d.summary.ger_conducive_days);
+          setText('cd-ger-silk', d.summary.ger_silking_window_sum ?? '—');
+          setText('cd-fer-days', d.summary.fer_conducive_days);
+          setText('cd-fer-silk', d.summary.fer_silking_window_sum ?? '—');
+
+          setText('cd-meta-site', d.site_name);
+          setText('cd-meta-year', d.year);
+          setText('cd-meta-source', d.data_source);
+          setText('cd-meta-planting', fmtDate(d.phenology.planting_date));
+          setText('cd-meta-silking',
+            d.phenology.silking_date
+              ? fmtDate(d.phenology.silking_date) + ' · ' + Math.round(d.phenology.hybrid_gdd_to_silk_c) + ' GDD °C'
+              : 'using ' + d.phenology.source.replace(/_/g, ' '));
+          setText('cd-meta-generated', d.generated_at.split('T')[0]);
+
+          document.getElementById('cd-silking-note').textContent =
+            'Silking window: ' + fmtDate(d.phenology.window_start) + ' through ' +
+            fmtDate(d.phenology.window_end) +
+            '. Tar spot risk is masked outside the agronomic validity window.';
+
+          const labels = d.daily.map(r => r.date);
+          const tempMean = d.daily.map(r => r.temp_mean);
+          const rhMean = d.daily.map(r => r.rh_mean);
+          const conducive = d.daily.map(r => r.ger_conducive ? 47 : null);
+          const tarspot = d.daily.map(r => r.tarspot_risk == null ? null : r.tarspot_risk * 100);
+
+          const silkStart = d.phenology.window_start;
+          const silkEnd = d.phenology.window_end;
+          const silkStartIdx = labels.findIndex(x => x >= silkStart);
+          const silkEndIdx = labels.findIndex(x => x > silkEnd);
+          const C = chartColors();
+
+          const silkOverlay = {
+            id: 'silk',
+            beforeDraw(c) {
+              if (silkStartIdx < 0) return;
+              const xs = c.scales.x.getPixelForValue(silkStartIdx);
+              const xe = silkEndIdx < 0
+                ? c.scales.x.getPixelForValue(labels.length - 1)
+                : c.scales.x.getPixelForValue(silkEndIdx);
+              c.ctx.save();
+              c.ctx.fillStyle = 'rgba(217, 119, 6, 0.10)';
+              c.ctx.fillRect(xs, c.chartArea.top, xe - xs, c.chartArea.bottom - c.chartArea.top);
+              c.ctx.strokeStyle = 'rgba(217, 119, 6, 0.40)';
+              c.ctx.setLineDash([3, 3]);
+              c.ctx.beginPath();
+              c.ctx.moveTo(xs, c.chartArea.top); c.ctx.lineTo(xs, c.chartArea.bottom);
+              c.ctx.moveTo(xe, c.chartArea.top); c.ctx.lineTo(xe, c.chartArea.bottom);
+              c.ctx.stroke();
+              c.ctx.restore();
+            }
+          };
+
+          if (chart) chart.destroy();
+          const ctx = document.getElementById('cd-chart').getContext('2d');
+          chart = new Chart(ctx, {
+            data: {
+              labels,
+              datasets: [
+                { type: 'line', label: 'Temp (°C)', data: tempMean,
+                  borderColor: C.temp, backgroundColor: 'transparent',
+                  borderWidth: 1.4, pointRadius: 0, tension: 0.25, yAxisID: 'y' },
+                { type: 'line', label: 'RH (%)', data: rhMean,
+                  borderColor: C.rh, backgroundColor: 'transparent',
+                  borderWidth: 1.4, pointRadius: 0, tension: 0.25,
+                  yAxisID: 'y1', borderDash: [4, 3] },
+                { type: 'line', label: 'Tar spot risk (%)', data: tarspot,
+                  borderColor: C.risk, backgroundColor: 'rgba(217, 119, 6, 0.12)',
+                  borderWidth: 1.8, pointRadius: 0, tension: 0.2,
+                  yAxisID: 'y1', fill: true },
+                { type: 'scatter', label: 'GER conducive', data: conducive.map((v, i) => v == null ? null : { x: labels[i], y: 47 }),
+                  backgroundColor: C.cond, pointRadius: 2.4, pointStyle: 'crossRot', yAxisID: 'y' },
+              ]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+              scales: {
+                x: { ticks: { maxTicksLimit: 8, font: { size: 10 }, color: C.muted },
+                     grid: { display: false } },
+                y: { position: 'left', title: { display: true, text: '°C', color: C.muted, font: { size: 10 } },
+                     min: 0, max: 50, ticks: { font: { size: 10 }, color: C.muted },
+                     grid: { color: C.grid } },
+                y1: { position: 'right', title: { display: true, text: 'RH % / risk %', color: C.muted, font: { size: 10 } },
+                      min: 0, max: 100, ticks: { font: { size: 10 }, color: C.muted },
+                      grid: { display: false } }
+              }
+            },
+            plugins: [silkOverlay]
+          });
+
+          const legendHtml = [
+            [C.temp, 'Temp'],
+            [C.rh, 'RH'],
+            [C.risk, 'Tar spot risk'],
+            [C.cond, 'GER conducive day'],
+          ].map(([c, l]) =>
+            '<span class="cd-legitem"><span class="cd-legdot" style="background:' + c + '"></span>' + l + '</span>'
+          ).join('');
+          document.getElementById('cd-legend').innerHTML = legendHtml +
+            '<span class="cd-legitem"><span class="cd-legdot" style="background:rgba(217,119,6,0.35);outline:1px dashed ' + C.risk + '"></span>Silking window</span>';
+
+          const sb = document.getElementById('cd-scouting-body');
+          if (!d.scouting || d.scouting.length === 0) {
+            sb.innerHTML = '<p class="cd-muted">No on-farm scouting recorded for this site-year.</p>';
+          } else {
+            const byField = {};
+            d.scouting.forEach(r => {
+              const k = r.field + ' · ' + r.date;
+              (byField[k] = byField[k] || []).push(r);
+            });
+            sb.innerHTML = Object.entries(byField).map(([k, arr]) => {
+              const pctVals = arr.map(r => r.southern_rust && r.southern_rust.incidence_pct).filter(v => v != null);
+              const meanPct = pctVals.length ? Math.round(pctVals.reduce((a, b) => a + b, 0) / pctVals.length) : null;
+              const cats = arr.map(r => r.southern_rust && r.southern_rust.incidence_category).filter(Boolean);
+              return '<div class="cd-scoutrow">' +
+                '<div class="cd-scoutkey">Field ' + k + '</div>' +
+                '<div class="cd-scoutval">' +
+                  arr.length + ' points · SR incidence ' +
+                  (meanPct != null ? meanPct + '%' : (cats.length ? cats.join(', ') : '—')) +
+                '</div></div>';
+            }).join('');
+          }
+        }
+
+        siteSel.addEventListener('change', render);
+        yearSel.addEventListener('change', render);
+        render();
+
+        // Re-render chart when theme toggles so colors update.
+        const observer = new MutationObserver(() => render());
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      })();
+    </script>
+  </>
+)}
+
+<style>
+  /* Styles are scoped to this component by Astro. We use the site's
+     existing CSS custom properties so light/dark mode flip is automatic. */
+
+  .cd-wrap {
+    margin-block: 1.5rem 2rem;
+    /* Break out of the .container-narrow / .prose-editorial flow visually
+       by removing inherited prose margins on direct children. */
+  }
+  .cd-wrap section,
+  .cd-wrap article {
+    margin: 0;
+  }
+
+  .cd-controls {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;
+    margin-bottom: 1.25rem;
+  }
+  .cd-control {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-subtle);
+  }
+  .cd-control select {
+    background: var(--bg-elevated); color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem; min-width: 200px;
+    text-transform: none; letter-spacing: 0;
+    cursor: pointer;
+  }
+  .cd-control select:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .cd-empty {
+    background: var(--surface); border: 1px dashed var(--border);
+    border-radius: 10px; padding: 1.25rem;
+    color: var(--text-muted); font-size: 0.9rem;
+  }
+  .cd-empty code {
+    font-family: var(--font-mono);
+    background: var(--surface-2); padding: 1px 6px;
+    border-radius: 3px; font-size: 0.85em;
+  }
+
+  .cd-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .cd-card {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .cd-card h3 {
+    font-family: var(--font-sans);
+    font-size: 0.78rem; font-weight: 500;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+    letter-spacing: 0;
+    text-wrap: pretty;
+  }
+  .cd-bignum {
+    font-family: var(--font-serif);
+    font-size: 1.6rem; font-weight: 500;
+    margin: 0; line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .cd-cardmeta {
+    font-size: 0.72rem; color: var(--text-muted);
+    margin: 6px 0 4px;
+  }
+  .cd-srcite {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-subtle);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cd-card-soft .cd-bignum { color: var(--text-subtle); }
+
+  .cd-chart-section {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    margin-bottom: 1rem;
+  }
+  .cd-chart-head {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
+  }
+  .cd-chart-head h3 {
+    font-family: var(--font-sans);
+    font-size: 0.9rem; font-weight: 500; margin: 0;
+    color: var(--text);
+    letter-spacing: 0;
+  }
+  .cd-legend { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cd-legitem {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cd-legdot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .cd-chart-wrap { position: relative; width: 100%; height: 290px; }
+  .cd-chart-note {
+    font-size: 0.75rem; color: var(--text-muted);
+    margin: 10px 0 0;
+    font-style: italic;
+  }
+
+  .cd-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 640px) { .cd-bottom { grid-template-columns: 1fr; } }
+
+  .cd-panel {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .cd-panel h3 {
+    font-family: var(--font-sans);
+    font-size: 0.9rem; font-weight: 500;
+    margin: 0 0 12px;
+    color: var(--text);
+    letter-spacing: 0;
+  }
+  .cd-defs {
+    margin: 0; display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 14px;
+    font-size: 0.85rem;
+  }
+  .cd-defs dt {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    align-self: center;
+  }
+  .cd-defs dd {
+    margin: 0; color: var(--text);
+  }
+  .cd-scoutrow {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .cd-scoutrow:last-child { border-bottom: none; }
+  .cd-scoutkey { color: var(--text-muted); }
+  .cd-scoutval { color: var(--text); }
+  .cd-muted {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+</style>
