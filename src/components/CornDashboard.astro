@@ -17,27 +17,27 @@
 const siteYears = import.meta.glob('../data/corn-dashboard/*.json', { eager: true });
 
 const datasets: Record<string, any> = {};
-let indexData: any[] = [];
 for (const [path, mod] of Object.entries(siteYears)) {
   const fname = path.split('/').pop()!;
+  if (fname === 'index.json') continue;  // not a site-year payload
   const payload = (mod as any).default ?? mod;
-  if (fname === 'index.json') {
-    indexData = Array.isArray(payload) ? payload : [];
-  } else {
-    datasets[fname.replace('.json', '')] = payload;
-  }
+  datasets[fname.replace('.json', '')] = payload;
 }
 
-const sites = Array.from(new Set(indexData.map((r: any) => r.site))).map((code: string) => {
-  const r = indexData.find((x: any) => x.site === code);
-  return { code, name: r?.site_name ?? code };
+// Derive sites and years from the actual payloads, not from index.json.
+// index.json can be stale (subsequent pipeline runs may have rewritten it
+// with only a subset), but the JSON files on disk are the source of truth.
+const allPayloads = Object.values(datasets) as any[];
+const siteMap = new Map<string, string>();
+allPayloads.forEach((d) => {
+  if (d?.site && !siteMap.has(d.site)) siteMap.set(d.site, d.site_name ?? d.site);
 });
-const years = Array.from(new Set(indexData.map((r: any) => r.year))).sort(
-  (a: number, b: number) => b - a
-);
+const sites = Array.from(siteMap.entries()).map(([code, name]) => ({ code, name }));
+const years = Array.from(new Set(allPayloads.map((d) => d.year).filter((y) => y != null)))
+  .sort((a: number, b: number) => b - a);
 const defaultSite = sites.find((s) => s.code === 'pds') ? 'pds' : sites[0]?.code ?? '';
 const defaultYear = years[0] ?? new Date().getFullYear();
-const hasData = indexData.length > 0;
+const hasData = sites.length > 0 && years.length > 0;
 ---
 
 <div class="cd-wrap">
@@ -149,7 +149,6 @@ const hasData = indexData.length > 0;
 {hasData && (
   <>
     <script id="cd-data" type="application/json" is:inline set:html={JSON.stringify(datasets)} />
-    <script id="cd-index" type="application/json" is:inline set:html={JSON.stringify(indexData)} />
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" is:inline />
     <script is:inline>

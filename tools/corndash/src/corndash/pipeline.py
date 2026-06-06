@@ -204,7 +204,7 @@ def main():
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    index = []
+    written = []
     for site_code in args.sites:
         for year in years:
             payload = run_site_year(site_code, year, planting, scouting_records)
@@ -213,16 +213,29 @@ def main():
             n_days = len(payload["daily"])
             n_scout = len(payload["scouting"])
             print(f"  → {fname}  ({n_days} days, {n_scout} scouting, src={payload['data_source']})")
-            index.append({
-                "site": site_code,
-                "site_name": payload["site_name"],
-                "year": year,
-                "file": fname,
-                "summary": payload["summary"],
-                "phenology": payload["phenology"],
-            })
-    (out_dir / "index.json").write_text(json.dumps(index, indent=2))
-    print(f"[done] {len(index)} site-years -> {out_dir}/")
+            written.append(fname)
+
+    # Rebuild index.json from EVERY file in the output dir, not just the ones
+    # we wrote in this run. This makes partial runs idempotent: running the
+    # pipeline for a single year never clobbers the index entries for other
+    # years that are already on disk.
+    full_index = []
+    for f in sorted(out_dir.glob("*_*.json")):
+        try:
+            data = json.loads(f.read_text())
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"  [warn] skipping {f.name}: {e}")
+            continue
+        full_index.append({
+            "site": data.get("site"),
+            "site_name": data.get("site_name"),
+            "year": data.get("year"),
+            "file": f.name,
+            "summary": data.get("summary", {}),
+            "phenology": data.get("phenology", {}),
+        })
+    (out_dir / "index.json").write_text(json.dumps(full_index, indent=2))
+    print(f"[done] wrote {len(written)} this run, index now lists {len(full_index)} site-years -> {out_dir}/")
 
 
 if __name__ == "__main__":
