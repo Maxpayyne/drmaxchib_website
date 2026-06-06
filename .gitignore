@@ -35,3 +35,4 @@ pnpm-debug.log*
 tools/corndash/.venv/
 tools/corndash/**/__pycache__/
 tools/corndash/**/*.egg-info/
+*:Zone.Identifier

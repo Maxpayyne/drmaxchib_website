@@ -280,7 +280,7 @@ const hasData = indexData.length > 0;
                   borderWidth: 1.8, pointRadius: 0, tension: 0.2,
                   yAxisID: 'y1', fill: true },
                 { type: 'scatter', label: 'GER conducive', data: conducive.map((v, i) => v == null ? null : { x: labels[i], y: 47 }),
-                  backgroundColor: C.cond, pointRadius: 2.4, pointStyle: 'crossRot', yAxisID: 'y' },
+                  backgroundColor: C.cond, pointRadius: 4.5, pointStyle: 'crossRot', yAxisID: 'y' },
               ]
             },
             options: {
@@ -301,16 +301,31 @@ const hasData = indexData.length > 0;
             plugins: [silkOverlay]
           });
 
-          const legendHtml = [
-            [C.temp, 'Temp'],
-            [C.rh, 'RH'],
-            [C.risk, 'Tar spot risk'],
-            [C.cond, 'GER conducive day'],
-          ].map(([c, l]) =>
-            '<span class="cd-legitem"><span class="cd-legdot" style="background:' + c + '"></span>' + l + '</span>'
-          ).join('');
-          document.getElementById('cd-legend').innerHTML = legendHtml +
-            '<span class="cd-legitem"><span class="cd-legdot" style="background:rgba(217,119,6,0.35);outline:1px dashed ' + C.risk + '"></span>Silking window</span>';
+          // Legend: each swatch mimics the actual visual style of its
+          // series on the chart, so the legend teaches the reader to
+          // parse the figure rather than just naming colors.
+          const legendItems = [
+            { kind: 'line',   color: C.temp, label: 'Daily mean temperature (°C)' },
+            { kind: 'dashed', color: C.rh,   label: 'Daily mean relative humidity (%)' },
+            { kind: 'area',   color: C.risk, label: 'Tar spot risk · Webster ensemble (%)' },
+            { kind: 'cross',  color: C.cond, label: 'Gibberella conducive day' },
+            { kind: 'shade',  color: C.risk, label: 'Silking window (R1 ± window)' },
+          ];
+          document.getElementById('cd-legend').innerHTML = legendItems.map(it => {
+            let swatch = '';
+            if (it.kind === 'line') {
+              swatch = '<span class="cd-sw cd-sw-line" style="--c:' + it.color + '"></span>';
+            } else if (it.kind === 'dashed') {
+              swatch = '<span class="cd-sw cd-sw-dashed" style="--c:' + it.color + '"></span>';
+            } else if (it.kind === 'area') {
+              swatch = '<span class="cd-sw cd-sw-area" style="--c:' + it.color + '"></span>';
+            } else if (it.kind === 'cross') {
+              swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">✕</span>';
+            } else if (it.kind === 'shade') {
+              swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
+            }
+            return '<span class="cd-legitem">' + swatch + '<span>' + it.label + '</span></span>';
+          }).join('');
 
           const sb = document.getElementById('cd-scouting-body');
           if (!d.scouting || d.scouting.length === 0) {
@@ -451,16 +466,49 @@ const hasData = indexData.length > 0;
     color: var(--text);
     letter-spacing: 0;
   }
-  .cd-legend { display: flex; gap: 12px; flex-wrap: wrap; }
-  .cd-legitem {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .cd-legend {
+    display: flex; gap: 14px 18px; flex-wrap: wrap;
+    align-items: center;
   }
-  .cd-legdot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .cd-legitem {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.2;
+  }
+
+  /* Each swatch mimics the visual style of its series on the chart. */
+  .cd-sw {
+    display: inline-block;
+    width: 18px;
+    flex-shrink: 0;
+  }
+  .cd-sw-line {
+    height: 0; border-top: 2px solid var(--c);
+  }
+  .cd-sw-dashed {
+    height: 0; border-top: 2px dashed var(--c);
+  }
+  .cd-sw-area {
+    height: 10px;
+    background: color-mix(in oklab, var(--c) 22%, transparent);
+    border-bottom: 2px solid var(--c);
+    border-radius: 1px;
+  }
+  .cd-sw-cross {
+    width: 18px; height: 12px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 12px;
+  }
+  .cd-sw-shade {
+    height: 12px;
+    background: color-mix(in oklab, var(--c) 14%, transparent);
+    border: 1px dashed color-mix(in oklab, var(--c) 55%, transparent);
+    border-radius: 1px;
+  }
   .cd-chart-wrap { position: relative; width: 100%; height: 290px; }
   .cd-chart-note {
     font-size: 0.75rem; color: var(--text-muted);
