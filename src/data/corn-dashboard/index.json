@@ -1,0 +1,74 @@
+[
+  {
+    "site": "pds",
+    "site_name": "Prairie du Sac (DFRC)",
+    "year": 2025,
+    "file": "pds_2025.json",
+    "summary": {
+      "ger_conducive_days": 48,
+      "ger_conducive_days_strict": 5,
+      "fer_conducive_days": 69,
+      "ger_silking_window_sum": 8,
+      "fer_silking_window_sum": 17,
+      "tarspot_peak_risk": 0.9725405303582326,
+      "tarspot_peak_date": "2025-09-19 00:00:00",
+      "tarspot_days_above_threshold": 55
+    },
+    "phenology": {
+      "silking_date": "2025-07-23",
+      "window_start": "2025-07-20",
+      "window_end": "2025-08-10",
+      "source": "gdd_from_planting",
+      "planting_date": "2025-05-03",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  },
+  {
+    "site": "arl",
+    "site_name": "Arlington ARS",
+    "year": 2025,
+    "file": "arl_2025.json",
+    "summary": {
+      "ger_conducive_days": 47,
+      "ger_conducive_days_strict": 3,
+      "fer_conducive_days": 65,
+      "ger_silking_window_sum": 9,
+      "fer_silking_window_sum": 16,
+      "tarspot_peak_risk": 0.9777550429159114,
+      "tarspot_peak_date": "2025-09-18 00:00:00",
+      "tarspot_days_above_threshold": 62
+    },
+    "phenology": {
+      "silking_date": "2025-07-24",
+      "window_start": "2025-07-21",
+      "window_end": "2025-08-11",
+      "source": "gdd_from_planting",
+      "planting_date": "2025-05-03",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  },
+  {
+    "site": "msh",
+    "site_name": "Marshfield ARS",
+    "year": 2025,
+    "file": "msh_2025.json",
+    "summary": {
+      "ger_conducive_days": 50,
+      "ger_conducive_days_strict": 7,
+      "fer_conducive_days": 53,
+      "ger_silking_window_sum": 10,
+      "fer_silking_window_sum": 13,
+      "tarspot_peak_risk": 0.9950275020133854,
+      "tarspot_peak_date": "2025-10-16 00:00:00",
+      "tarspot_days_above_threshold": 98
+    },
+    "phenology": {
+      "silking_date": "2025-08-02",
+      "window_start": "2025-07-30",
+      "window_end": "2025-08-20",
+      "source": "gdd_from_planting",
+      "planting_date": "2025-05-03",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  }
+]
