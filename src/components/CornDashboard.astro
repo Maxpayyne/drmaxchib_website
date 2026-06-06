@@ -362,9 +362,12 @@ const hasData = indexData.length > 0;
   </>
 )}
 
-<style>
-  /* Styles are scoped to this component by Astro. We use the site's
-     existing CSS custom properties so light/dark mode flip is automatic. */
+<style is:global>
+  /* Marked is:global because the legend swatches and scouting rows are
+     inserted via innerHTML at runtime. Astro's scoped CSS uses a build-time
+     attribute hash that runtime DOM nodes don't have, so without is:global
+     those elements escape the styles entirely. All selectors are namespaced
+     under `cd-*` so there's no collision risk with other components. */
 
   .cd-wrap {
     margin-block: 1.5rem 2rem;
