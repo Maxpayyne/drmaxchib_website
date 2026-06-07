@@ -1,0 +1,32 @@
+{
+  "year": 2025,
+  "source_url": "https://corn.ipmpipe.org/southerncornrust/",
+  "updated": "2025-12-31",
+  "estimated": true,
+  "notes": "First-confirmation dates seeded from regionally-typical timing patterns because the public CPN map shows end-of-season cumulative presence but not first-detection per state. Refine these dates against the CPN weekly observations table when you have a moment. WI date from Max's PdS scouting (field 3300, 8/26).",
+  "states": {
+    "FL": "2025-06-10",
+    "LA": "2025-06-15",
+    "MS": "2025-06-18",
+    "AL": "2025-06-20",
+    "GA": "2025-06-22",
+    "TX": "2025-06-25",
+    "AR": "2025-07-05",
+    "KY": "2025-07-10",
+    "TN": "2025-07-10",
+    "NC": "2025-07-15",
+    "SC": "2025-07-15",
+    "VA": "2025-07-20",
+    "MO": "2025-07-25",
+    "KS": "2025-07-25",
+    "NE": "2025-07-30",
+    "IL": "2025-08-05",
+    "IA": "2025-08-08",
+    "IN": "2025-08-10",
+    "OH": "2025-08-12",
+    "MI": "2025-08-18",
+    "MN": "2025-08-20",
+    "WI": "2025-08-26",
+    "SD": "2025-08-30"
+  }
+}

@@ -12,7 +12,18 @@
       "fer_silking_window_sum": 7,
       "tarspot_peak_risk": 0.9989227701934982,
       "tarspot_peak_date": "2020-10-06 00:00:00",
-      "tarspot_days_above_threshold": 73
+      "tarspot_days_above_threshold": 73,
+      "srust_conducive_days": 8,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.014285714285714285,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.3428571428571429,
+      "mycotoxin_silking_mean": 0.1753246753246753,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2020-07-23",
@@ -36,7 +47,18 @@
       "fer_silking_window_sum": 8,
       "tarspot_peak_risk": 0.9585267721557231,
       "tarspot_peak_date": "2021-09-29 00:00:00",
-      "tarspot_days_above_threshold": 65
+      "tarspot_days_above_threshold": 65,
+      "srust_conducive_days": 6,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.48571428571428577,
+      "mycotoxin_silking_mean": 0.1357142857142857,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2021-07-23",
@@ -60,7 +82,18 @@
       "fer_silking_window_sum": 6,
       "tarspot_peak_risk": 0.9902888717233822,
       "tarspot_peak_date": "2022-10-04 00:00:00",
-      "tarspot_days_above_threshold": 74
+      "tarspot_days_above_threshold": 74,
+      "srust_conducive_days": 5,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.35714285714285715,
+      "mycotoxin_silking_mean": 0.12467532467532472,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2022-07-21",
@@ -84,7 +117,18 @@
       "fer_silking_window_sum": 7,
       "tarspot_peak_risk": 0.9508528965161263,
       "tarspot_peak_date": "2023-06-19 00:00:00",
-      "tarspot_days_above_threshold": 103
+      "tarspot_days_above_threshold": 103,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.31428571428571433,
+      "mycotoxin_silking_mean": 0.1668831168831169,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2023-07-22",
@@ -108,7 +152,18 @@
       "fer_silking_window_sum": 11,
       "tarspot_peak_risk": 0.9749859160650931,
       "tarspot_peak_date": "2024-10-09 00:00:00",
-      "tarspot_days_above_threshold": 97
+      "tarspot_days_above_threshold": 97,
+      "srust_conducive_days": 3,
+      "srust_silking_window_sum": 1,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.6571428571428571,
+      "mycotoxin_silking_mean": 0.45389610389610396,
+      "mycotoxin_category": "Elevated",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2024-07-26",
@@ -132,7 +187,18 @@
       "fer_silking_window_sum": 16,
       "tarspot_peak_risk": 0.9777550429159114,
       "tarspot_peak_date": "2025-09-18 00:00:00",
-      "tarspot_days_above_threshold": 62
+      "tarspot_days_above_threshold": 62,
+      "srust_conducive_days": 33,
+      "srust_silking_window_sum": 9,
+      "srust_peak_risk": 0.35,
+      "srust_arrival_tier": "local",
+      "srust_arrival_state": "WI",
+      "srust_arrival_date": "2025-08-26",
+      "srust_arrival_modifier": 1.0,
+      "mycotoxin_peak_score": 0.8428571428571429,
+      "mycotoxin_silking_mean": 0.5564935064935066,
+      "mycotoxin_category": "Elevated",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2025-07-24",
@@ -156,7 +222,18 @@
       "fer_silking_window_sum": 4,
       "tarspot_peak_risk": 0.999678772630664,
       "tarspot_peak_date": "2020-10-08 00:00:00",
-      "tarspot_days_above_threshold": 89
+      "tarspot_days_above_threshold": 89,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.014285714285714285,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.35714285714285715,
+      "mycotoxin_silking_mean": 0.17987012987012985,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Both"
     },
     "phenology": {
       "silking_date": "2020-07-29",
@@ -180,7 +257,18 @@
       "fer_silking_window_sum": 9,
       "tarspot_peak_risk": 0.9896300823312452,
       "tarspot_peak_date": "2021-09-29 00:00:00",
-      "tarspot_days_above_threshold": 109
+      "tarspot_days_above_threshold": 109,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.014285714285714285,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.5,
+      "mycotoxin_silking_mean": 0.3311688311688312,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Both"
     },
     "phenology": {
       "silking_date": "2021-07-28",
@@ -204,7 +292,18 @@
       "fer_silking_window_sum": 7,
       "tarspot_peak_risk": 0.9998353025054606,
       "tarspot_peak_date": "2022-10-15 00:00:00",
-      "tarspot_days_above_threshold": 109
+      "tarspot_days_above_threshold": 109,
+      "srust_conducive_days": 2,
+      "srust_silking_window_sum": 1,
+      "srust_peak_risk": 0.0035714285714285713,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.3714285714285714,
+      "mycotoxin_silking_mean": 0.22142857142857145,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Both"
     },
     "phenology": {
       "silking_date": "2022-08-01",
@@ -228,7 +327,18 @@
       "fer_silking_window_sum": 9,
       "tarspot_peak_risk": 0.9976617921091205,
       "tarspot_peak_date": "2023-10-12 00:00:00",
-      "tarspot_days_above_threshold": 109
+      "tarspot_days_above_threshold": 109,
+      "srust_conducive_days": 2,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.3285714285714286,
+      "mycotoxin_silking_mean": 0.1967532467532468,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2023-07-29",
@@ -252,7 +362,18 @@
       "fer_silking_window_sum": 4,
       "tarspot_peak_risk": 0.9996133035962755,
       "tarspot_peak_date": "2024-10-18 00:00:00",
-      "tarspot_days_above_threshold": 109
+      "tarspot_days_above_threshold": 109,
+      "srust_conducive_days": 1,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.0035714285714285713,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.4714285714285714,
+      "mycotoxin_silking_mean": 0.3084415584415585,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Both"
     },
     "phenology": {
       "silking_date": "2024-08-04",
@@ -276,7 +397,18 @@
       "fer_silking_window_sum": 13,
       "tarspot_peak_risk": 0.9950275020133854,
       "tarspot_peak_date": "2025-10-16 00:00:00",
-      "tarspot_days_above_threshold": 98
+      "tarspot_days_above_threshold": 98,
+      "srust_conducive_days": 18,
+      "srust_silking_window_sum": 4,
+      "srust_peak_risk": 0.3,
+      "srust_arrival_tier": "local",
+      "srust_arrival_state": "WI",
+      "srust_arrival_date": "2025-08-26",
+      "srust_arrival_modifier": 1.0,
+      "mycotoxin_peak_score": 0.7428571428571429,
+      "mycotoxin_silking_mean": 0.4467532467532468,
+      "mycotoxin_category": "Elevated",
+      "mycotoxin_dominant": "Both"
     },
     "phenology": {
       "silking_date": "2025-08-02",
@@ -300,7 +432,18 @@
       "fer_silking_window_sum": 7,
       "tarspot_peak_risk": 0.9987152879881929,
       "tarspot_peak_date": "2020-10-05 00:00:00",
-      "tarspot_days_above_threshold": 69
+      "tarspot_days_above_threshold": 69,
+      "srust_conducive_days": 9,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.01785714285714286,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.37142857142857144,
+      "mycotoxin_silking_mean": 0.21298701298701292,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2020-07-22",
@@ -324,7 +467,18 @@
       "fer_silking_window_sum": 10,
       "tarspot_peak_risk": 0.9554600289819275,
       "tarspot_peak_date": "2021-09-29 00:00:00",
-      "tarspot_days_above_threshold": 54
+      "tarspot_days_above_threshold": 54,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 1,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.5142857142857143,
+      "mycotoxin_silking_mean": 0.24285714285714288,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2021-07-20",
@@ -348,7 +502,18 @@
       "fer_silking_window_sum": 9,
       "tarspot_peak_risk": 0.9883798657400338,
       "tarspot_peak_date": "2022-10-03 00:00:00",
-      "tarspot_days_above_threshold": 62
+      "tarspot_days_above_threshold": 62,
+      "srust_conducive_days": 5,
+      "srust_silking_window_sum": 2,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.35714285714285715,
+      "mycotoxin_silking_mean": 0.19675324675324682,
+      "mycotoxin_category": "Moderate",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2022-07-20",
@@ -372,7 +537,18 @@
       "fer_silking_window_sum": 5,
       "tarspot_peak_risk": 0.9490336363887586,
       "tarspot_peak_date": "2023-06-18 00:00:00",
-      "tarspot_days_above_threshold": 86
+      "tarspot_days_above_threshold": 86,
+      "srust_conducive_days": 3,
+      "srust_silking_window_sum": 1,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.27142857142857146,
+      "mycotoxin_silking_mean": 0.10714285714285715,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2023-07-21",
@@ -396,7 +572,18 @@
       "fer_silking_window_sum": 14,
       "tarspot_peak_risk": 0.9637827722551602,
       "tarspot_peak_date": "2024-10-07 00:00:00",
-      "tarspot_days_above_threshold": 95
+      "tarspot_days_above_threshold": 95,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 1,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.6857142857142858,
+      "mycotoxin_silking_mean": 0.5331168831168832,
+      "mycotoxin_category": "Elevated",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2024-07-24",
@@ -420,7 +607,18 @@
       "fer_silking_window_sum": 17,
       "tarspot_peak_risk": 0.9725405303582326,
       "tarspot_peak_date": "2025-09-19 00:00:00",
-      "tarspot_days_above_threshold": 55
+      "tarspot_days_above_threshold": 55,
+      "srust_conducive_days": 39,
+      "srust_silking_window_sum": 12,
+      "srust_peak_risk": 0.5,
+      "srust_arrival_tier": "local",
+      "srust_arrival_state": "WI",
+      "srust_arrival_date": "2025-08-26",
+      "srust_arrival_modifier": 1.0,
+      "mycotoxin_peak_score": 0.8428571428571429,
+      "mycotoxin_silking_mean": 0.55,
+      "mycotoxin_category": "Elevated",
+      "mycotoxin_dominant": "Fumonisin-leaning"
     },
     "phenology": {
       "silking_date": "2025-07-23",

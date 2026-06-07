@@ -85,25 +85,30 @@ const hasData = sites.length > 0 && years.length > 0;
           <p class="cd-cardmeta">conducive days · <span id="cd-fer-silk">—</span> in silking</p>
           <p class="cd-srcite">20–35 °C, RH ≥ 70 %</p>
         </article>
-        <article class="cd-card cd-card-soft">
+        <article class="cd-card">
           <h3>Southern rust</h3>
-          <p class="cd-bignum">v1.1</p>
-          <p class="cd-cardmeta">arrival + local conduciveness</p>
-          <p class="cd-srcite">queued</p>
+          <p class="cd-bignum" id="cd-srust-peak">—</p>
+          <p class="cd-cardmeta">peak risk · <span id="cd-srust-days">—</span> d conducive · <span id="cd-srust-silk">—</span> in silking</p>
+          <p class="cd-srcite"><span id="cd-srust-tier" class="cd-tier-pill">—</span></p>
         </article>
-        <article class="cd-card cd-card-soft">
+        <article class="cd-card">
           <h3>Mycotoxin risk</h3>
-          <p class="cd-bignum">v1.1</p>
-          <p class="cd-cardmeta">silking-weighted composite</p>
-          <p class="cd-srcite">queued</p>
+          <p class="cd-bignum cd-bignum-text" id="cd-myco-category">—</p>
+          <p class="cd-cardmeta"><span id="cd-myco-dominant">—</span> · silking mean <span id="cd-myco-mean">—</span></p>
+          <p class="cd-srcite">Hazard index · DON + fumonisin</p>
         </article>
       </section>
 
       <section class="cd-chart-section">
         <div class="cd-chart-head">
           <h3>Seasonal timeline</h3>
-          <div class="cd-legend" id="cd-legend"></div>
+          <div class="cd-tabs" role="tablist" aria-label="Disease risk series">
+            <button type="button" class="cd-tab cd-tab-active" role="tab" aria-selected="true" data-disease="tarspot">Tar spot</button>
+            <button type="button" class="cd-tab" role="tab" aria-selected="false" data-disease="srust">Southern rust</button>
+            <button type="button" class="cd-tab" role="tab" aria-selected="false" data-disease="mycotoxin">Mycotoxin</button>
+          </div>
         </div>
+        <div class="cd-legend" id="cd-legend"></div>
         <div class="cd-chart-wrap">
           <canvas
             id="cd-chart"
@@ -172,12 +177,18 @@ const hasData = sites.length > 0 && years.length > 0;
           return {
             temp: isDark ? '#e88c7a' : '#c05a3f',
             rh:   isDark ? '#7aa6e8' : '#3a6ca6',
-            risk: isDark ? '#fbbf24' : '#d97706',
-            cond: tok('--accent', isDark ? '#8eb190' : '#2f5734'),
+            tarspot:  isDark ? '#fbbf24' : '#d97706',  // amber
+            srust:    isDark ? '#ef4444' : '#b91c1c',  // rust red
+            mycotoxin:isDark ? '#a78bfa' : '#7e22ce',  // purple
+            ger: tok('--accent', isDark ? '#8eb190' : '#2f5734'),
+            fer: isDark ? '#fb923c' : '#ea580c',       // orange
             muted: tok('--text-muted', '#6b6b66'),
             grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)',
           };
         }
+
+        // Tracks which disease's risk series is shown on the chart.
+        let currentDisease = 'tarspot';
 
         function fmtPct(x) { return x == null ? '—' : Math.round(x * 100) + '%'; }
         function fmtDate(s) {
@@ -213,6 +224,25 @@ const hasData = sites.length > 0 && years.length > 0;
           setText('cd-fer-days', d.summary.fer_conducive_days);
           setText('cd-fer-silk', d.summary.fer_silking_window_sum ?? '—');
 
+          // Southern rust card
+          setText('cd-srust-peak', fmtPct(d.summary.srust_peak_risk));
+          setText('cd-srust-days', d.summary.srust_conducive_days ?? 0);
+          setText('cd-srust-silk', d.summary.srust_silking_window_sum ?? '—');
+          const tier = d.summary.srust_arrival_tier || 'none';
+          const tierLabels = {
+            local: 'Local (WI)', adjacent: 'Adjacent', regional: 'Regional',
+            southern: 'Southern only', none: 'No arrivals'
+          };
+          const tierEl = document.getElementById('cd-srust-tier');
+          tierEl.textContent = tierLabels[tier] || tier;
+          tierEl.dataset.tier = tier;
+
+          // Mycotoxin card
+          setText('cd-myco-category', d.summary.mycotoxin_category || '—');
+          setText('cd-myco-dominant', d.summary.mycotoxin_dominant || '—');
+          const mxMean = d.summary.mycotoxin_silking_mean;
+          setText('cd-myco-mean', mxMean == null ? '—' : mxMean.toFixed(2));
+
           setText('cd-meta-site', d.site_name);
           setText('cd-meta-year', d.year);
           setText('cd-meta-source', d.data_source);
@@ -231,14 +261,68 @@ const hasData = sites.length > 0 && years.length > 0;
           const labels = d.daily.map(r => r.date);
           const tempMean = d.daily.map(r => r.temp_mean);
           const rhMean = d.daily.map(r => r.rh_mean);
-          const conducive = d.daily.map(r => r.ger_conducive ? 47 : null);
-          const tarspot = d.daily.map(r => r.tarspot_risk == null ? null : r.tarspot_risk * 100);
+          const C = chartColors();
+
+          // Disease-specific series + legend, switched by the tab control.
+          const riskSeries = {
+            tarspot: {
+              color: C.tarspot,
+              values: d.daily.map(r => r.tarspot_risk == null ? null : r.tarspot_risk * 100),
+              label: 'Tar spot risk · Webster ensemble (%)',
+              markers: [
+                { color: C.ger, label: 'Gibberella conducive day',
+                  data: d.daily.map(r => r.ger_conducive ? 47 : null), style: 'crossRot' },
+              ],
+            },
+            srust: {
+              color: C.srust,
+              values: d.daily.map(r => r.srust_risk == null ? null : r.srust_risk * 100),
+              label: 'Southern rust risk · local × arrival (%)',
+              markers: [
+                { color: C.srust, label: 'Southern rust conducive day',
+                  data: d.daily.map(r => r.srust_conducive ? 47 : null), style: 'crossRot' },
+              ],
+            },
+            mycotoxin: {
+              color: C.mycotoxin,
+              values: d.daily.map(r => r.mycotoxin_score == null ? null : r.mycotoxin_score * 100),
+              label: 'Mycotoxin hazard index (DON+fumonisin, %) · ear susceptibility window',
+              markers: [
+                { color: C.ger, label: 'Gibberella conducive day',
+                  data: d.daily.map(r => r.ger_conducive ? 47 : null), style: 'crossRot' },
+                { color: C.fer, label: 'Fusarium conducive day',
+                  data: d.daily.map(r => r.fer_conducive ? 44 : null), style: 'cross' },
+              ],
+            },
+          }[currentDisease];
+
+          // The silking band shows on every tab, but with a different
+          // semantic depending on the disease:
+          //   tar spot   — model validity window from the Webster paper
+          //   srust      — yield-critical period for foliar damage
+          //   mycotoxin  — ear susceptibility window for infection
+          const silkLabel = {
+            tarspot:   'Silking window (model validity)',
+            srust:     'Silking window (yield-critical period)',
+            mycotoxin: 'Silking window (ear susceptibility)',
+          }[currentDisease];
 
           const silkStart = d.phenology.window_start;
           const silkEnd = d.phenology.window_end;
           const silkStartIdx = labels.findIndex(x => x >= silkStart);
           const silkEndIdx = labels.findIndex(x => x > silkEnd);
-          const C = chartColors();
+
+          // Use the currently-selected disease's color for the silking band
+          // so the highlight visually pairs with the risk series.
+          const seriesColorRgba = (alpha) => {
+            // crude: pull the named color and apply alpha through canvas
+            const c = document.createElement('canvas').getContext('2d');
+            c.fillStyle = riskSeries.color;
+            const hex = c.fillStyle;
+            const n = parseInt(hex.slice(1), 16);
+            const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+            return `rgba(${r},${g},${b},${alpha})`;
+          };
 
           const silkOverlay = {
             id: 'silk',
@@ -249,9 +333,9 @@ const hasData = sites.length > 0 && years.length > 0;
                 ? c.scales.x.getPixelForValue(labels.length - 1)
                 : c.scales.x.getPixelForValue(silkEndIdx);
               c.ctx.save();
-              c.ctx.fillStyle = 'rgba(217, 119, 6, 0.10)';
+              c.ctx.fillStyle = seriesColorRgba(0.10);
               c.ctx.fillRect(xs, c.chartArea.top, xe - xs, c.chartArea.bottom - c.chartArea.top);
-              c.ctx.strokeStyle = 'rgba(217, 119, 6, 0.40)';
+              c.ctx.strokeStyle = seriesColorRgba(0.40);
               c.ctx.setLineDash([3, 3]);
               c.ctx.beginPath();
               c.ctx.moveTo(xs, c.chartArea.top); c.ctx.lineTo(xs, c.chartArea.bottom);
@@ -263,25 +347,29 @@ const hasData = sites.length > 0 && years.length > 0;
 
           if (chart) chart.destroy();
           const ctx = document.getElementById('cd-chart').getContext('2d');
+          const datasets_ = [
+            { type: 'line', label: 'Temp (°C)', data: tempMean,
+              borderColor: C.temp, backgroundColor: 'transparent',
+              borderWidth: 1.4, pointRadius: 0, tension: 0.25, yAxisID: 'y' },
+            { type: 'line', label: 'RH (%)', data: rhMean,
+              borderColor: C.rh, backgroundColor: 'transparent',
+              borderWidth: 1.4, pointRadius: 0, tension: 0.25,
+              yAxisID: 'y1', borderDash: [4, 3] },
+            { type: 'line', label: riskSeries.label, data: riskSeries.values,
+              borderColor: riskSeries.color, backgroundColor: seriesColorRgba(0.12),
+              borderWidth: 1.8, pointRadius: 0, tension: 0.2,
+              yAxisID: 'y1', fill: true, spanGaps: false },
+          ];
+          riskSeries.markers.forEach(m => {
+            datasets_.push({
+              type: 'scatter', label: m.label,
+              data: m.data.map((v, i) => v == null ? null : { x: labels[i], y: v }),
+              backgroundColor: m.color, pointRadius: 4.5, pointStyle: m.style, yAxisID: 'y',
+            });
+          });
+
           chart = new Chart(ctx, {
-            data: {
-              labels,
-              datasets: [
-                { type: 'line', label: 'Temp (°C)', data: tempMean,
-                  borderColor: C.temp, backgroundColor: 'transparent',
-                  borderWidth: 1.4, pointRadius: 0, tension: 0.25, yAxisID: 'y' },
-                { type: 'line', label: 'RH (%)', data: rhMean,
-                  borderColor: C.rh, backgroundColor: 'transparent',
-                  borderWidth: 1.4, pointRadius: 0, tension: 0.25,
-                  yAxisID: 'y1', borderDash: [4, 3] },
-                { type: 'line', label: 'Tar spot risk (%)', data: tarspot,
-                  borderColor: C.risk, backgroundColor: 'rgba(217, 119, 6, 0.12)',
-                  borderWidth: 1.8, pointRadius: 0, tension: 0.2,
-                  yAxisID: 'y1', fill: true },
-                { type: 'scatter', label: 'GER conducive', data: conducive.map((v, i) => v == null ? null : { x: labels[i], y: 47 }),
-                  backgroundColor: C.cond, pointRadius: 4.5, pointStyle: 'crossRot', yAxisID: 'y' },
-              ]
-            },
+            data: { labels, datasets: datasets_ },
             options: {
               responsive: true, maintainAspectRatio: false,
               interaction: { mode: 'index', intersect: false },
@@ -300,29 +388,24 @@ const hasData = sites.length > 0 && years.length > 0;
             plugins: [silkOverlay]
           });
 
-          // Legend: each swatch mimics the actual visual style of its
-          // series on the chart, so the legend teaches the reader to
-          // parse the figure rather than just naming colors.
-          const legendItems = [
+          // Legend rendered to match the current tab's series.
+          const legendDefs = [
             { kind: 'line',   color: C.temp, label: 'Daily mean temperature (°C)' },
             { kind: 'dashed', color: C.rh,   label: 'Daily mean relative humidity (%)' },
-            { kind: 'area',   color: C.risk, label: 'Tar spot risk · Webster ensemble (%)' },
-            { kind: 'cross',  color: C.cond, label: 'Gibberella conducive day' },
-            { kind: 'shade',  color: C.risk, label: 'Silking window (R1 ± window)' },
+            { kind: 'area',   color: riskSeries.color, label: riskSeries.label },
           ];
-          document.getElementById('cd-legend').innerHTML = legendItems.map(it => {
-            let swatch = '';
-            if (it.kind === 'line') {
-              swatch = '<span class="cd-sw cd-sw-line" style="--c:' + it.color + '"></span>';
-            } else if (it.kind === 'dashed') {
-              swatch = '<span class="cd-sw cd-sw-dashed" style="--c:' + it.color + '"></span>';
-            } else if (it.kind === 'area') {
-              swatch = '<span class="cd-sw cd-sw-area" style="--c:' + it.color + '"></span>';
-            } else if (it.kind === 'cross') {
-              swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">✕</span>';
-            } else if (it.kind === 'shade') {
-              swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
-            }
+          riskSeries.markers.forEach(m => {
+            legendDefs.push({ kind: 'cross', color: m.color, label: m.label });
+          });
+          legendDefs.push({ kind: 'shade', color: riskSeries.color, label: silkLabel });
+
+          document.getElementById('cd-legend').innerHTML = legendDefs.map(it => {
+            let swatch;
+            if (it.kind === 'line')        swatch = '<span class="cd-sw cd-sw-line" style="--c:' + it.color + '"></span>';
+            else if (it.kind === 'dashed') swatch = '<span class="cd-sw cd-sw-dashed" style="--c:' + it.color + '"></span>';
+            else if (it.kind === 'area')   swatch = '<span class="cd-sw cd-sw-area" style="--c:' + it.color + '"></span>';
+            else if (it.kind === 'cross')  swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">✕</span>';
+            else if (it.kind === 'shade')  swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
             return '<span class="cd-legitem">' + swatch + '<span>' + it.label + '</span></span>';
           }).join('');
 
@@ -351,6 +434,21 @@ const hasData = sites.length > 0 && years.length > 0;
 
         siteSel.addEventListener('change', render);
         yearSel.addEventListener('change', render);
+
+        // Tab control: swap the chart's risk series + legend.
+        document.querySelectorAll('.cd-tab').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.cd-tab').forEach(b => {
+              b.classList.remove('cd-tab-active');
+              b.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('cd-tab-active');
+            btn.setAttribute('aria-selected', 'true');
+            currentDisease = btn.dataset.disease;
+            render();
+          });
+        });
+
         render();
 
         // Re-render chart when theme toggles so colors update.
@@ -460,7 +558,7 @@ const hasData = sites.length > 0 && years.length > 0;
   }
   .cd-chart-head {
     display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
   }
   .cd-chart-head h3 {
     font-family: var(--font-sans);
@@ -468,6 +566,81 @@ const hasData = sites.length > 0 && years.length > 0;
     color: var(--text);
     letter-spacing: 0;
   }
+
+  /* Disease toggle tabs above the chart */
+  .cd-tabs {
+    display: inline-flex;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 2px;
+  }
+  .cd-tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 120ms, color 120ms;
+  }
+  .cd-tab:hover {
+    color: var(--text);
+  }
+  .cd-tab-active {
+    background: var(--bg-elevated);
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  /* Big-number variant for the mycotoxin card where the value is a word */
+  .cd-bignum-text {
+    font-size: 1.25rem;
+    letter-spacing: 0;
+  }
+
+  /* Arrival tier pill on the southern rust card */
+  .cd-tier-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .cd-tier-pill[data-tier="local"] {
+    background: color-mix(in oklab, #b91c1c 18%, transparent);
+    color: #7f1d1d;
+    border-color: color-mix(in oklab, #b91c1c 35%, transparent);
+  }
+  .cd-tier-pill[data-tier="adjacent"] {
+    background: color-mix(in oklab, #d97706 18%, transparent);
+    color: #92400e;
+    border-color: color-mix(in oklab, #d97706 35%, transparent);
+  }
+  .cd-tier-pill[data-tier="regional"] {
+    background: color-mix(in oklab, #ca8a04 14%, transparent);
+    color: #854d0e;
+    border-color: color-mix(in oklab, #ca8a04 30%, transparent);
+  }
+  .cd-tier-pill[data-tier="southern"] {
+    background: color-mix(in oklab, #65a30d 14%, transparent);
+    color: #365314;
+    border-color: color-mix(in oklab, #65a30d 30%, transparent);
+  }
+  :root[data-theme="dark"] .cd-tier-pill[data-tier="local"]   { color: #fca5a5; }
+  :root[data-theme="dark"] .cd-tier-pill[data-tier="adjacent"]{ color: #fdba74; }
+  :root[data-theme="dark"] .cd-tier-pill[data-tier="regional"]{ color: #fde047; }
+  :root[data-theme="dark"] .cd-tier-pill[data-tier="southern"]{ color: #bef264; }
   .cd-legend {
     display: flex; gap: 14px 18px; flex-wrap: wrap;
     align-items: center;

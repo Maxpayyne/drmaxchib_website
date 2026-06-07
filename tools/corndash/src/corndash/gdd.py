@@ -89,10 +89,12 @@ def silking_window_from_planting(
     if silk is None:
         # Fallback: use literature default for southern WI corn (DOY 200-220)
         year = planting_date.year
+        ws = pd.Timestamp(f"{year}-01-01").date() + dt.timedelta(days=199)
+        we = pd.Timestamp(f"{year}-01-01").date() + dt.timedelta(days=219)
         return {
             "silking_date": None,
-            "window_start": pd.Timestamp(f"{year}-01-01").date() + dt.timedelta(days=199),
-            "window_end": pd.Timestamp(f"{year}-01-01").date() + dt.timedelta(days=219),
+            "window_start": ws.isoformat(),
+            "window_end": we.isoformat(),
             "source": "default_doy_200_220",
             "planting_date": planting_date.isoformat(),
             "hybrid_gdd_to_silk_c": hybrid_gdd_to_silk_c,
@@ -100,8 +102,8 @@ def silking_window_from_planting(
     start, end = silking_window(silk)
     return {
         "silking_date": silk.isoformat(),
-        "window_start": start.isoformat() if hasattr(start, "isoformat") else start,
-        "window_end": end.isoformat() if hasattr(end, "isoformat") else end,
+        "window_start": start.isoformat(),
+        "window_end": end.isoformat(),
         "source": "gdd_from_planting",
         "planting_date": planting_date.isoformat(),
         "hybrid_gdd_to_silk_c": hybrid_gdd_to_silk_c,
