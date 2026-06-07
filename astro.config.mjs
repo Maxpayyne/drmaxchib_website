@@ -8,7 +8,7 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://drmaxchib.com',
   trailingSlash: 'never',
-  output: 'static',
+  output: 'server',
   adapter: cloudflare({
     platformProxy: { enabled: true },
     imageService: 'compile',
