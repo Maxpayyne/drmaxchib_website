@@ -140,6 +140,14 @@ const hasData = sites.length > 0 && years.length > 0;
           </dl>
         </article>
       </section>
+
+      <details class="cd-methods">
+        <summary>
+          <span class="cd-methods-title">Model methods &amp; citations</span>
+          <span class="cd-methods-hint">click to expand</span>
+        </summary>
+        <div id="cd-methods-body" class="cd-methods-body"></div>
+      </details>
     </>
   ) : (
     <div class="cd-empty">
@@ -200,6 +208,62 @@ const hasData = sites.length > 0 && years.length > 0;
         function setText(id, value) {
           const el = document.getElementById(id);
           if (el) el.textContent = value == null || value === '' ? '—' : value;
+        }
+
+        // Format a single METADATA dict into a card. Keys are checked
+        // tolerantly because each model exposes a slightly different shape.
+        function modelCard(md) {
+          if (!md) return '';
+          const rows = [];
+          const push = (label, html) => rows.push('<dt>' + label + '</dt><dd>' + html + '</dd>');
+
+          if (md.pathogen)           push('Pathogen', '<em>' + md.pathogen + '</em>');
+          if (md.pathogens)          push('Pathogens', '<em>' + md.pathogens + '</em>');
+          if (md.primary_model)      push('Model', md.primary_model);
+          if (md.primary_mycotoxin)  push('Primary mycotoxin', md.primary_mycotoxin);
+          if (md.primary_mycotoxins) push('Primary mycotoxins', md.primary_mycotoxins.join(', '));
+          if (md.thresholds)         push('Thresholds', md.thresholds);
+          if (md.risk_threshold != null) push('Risk threshold', Math.round(md.risk_threshold * 100) + '%');
+          if (Array.isArray(md.inputs) && md.inputs.length) {
+            push('Inputs', '<ul>' + md.inputs.map(i => '<li>' + i + '</li>').join('') + '</ul>');
+          }
+          if (md.tier_modifiers) {
+            const items = Object.entries(md.tier_modifiers)
+              .map(([k, v]) => '<li><strong>' + k + '</strong> · ' + v + '</li>')
+              .join('');
+            push('Arrival tiers', '<ul>' + items + '</ul>');
+          }
+          if (md.performance) {
+            const parts = Object.entries(md.performance).map(([k, v]) => {
+              const fmt = typeof v === 'number' ? v.toFixed(3) : v;
+              return k + ' ' + fmt;
+            }).join(' · ');
+            push('Performance', parts);
+          }
+          if (md.categories)  push('Categories', md.categories);
+          if (md.limitations) push('Limitations', md.limitations);
+          if (md.citation)    push('Citation', '<span class="cd-cite">' + md.citation + '</span>');
+
+          return '<article class="cd-model"><h4>' + (md.name || 'Model') + '</h4><dl>' + rows.join('') + '</dl></article>';
+        }
+
+        function renderMethods(metadata) {
+          const host = document.getElementById('cd-methods-body');
+          if (!host) return;
+          if (!metadata || !Object.keys(metadata).length) {
+            host.innerHTML = '<p class="cd-muted">No model metadata recorded for this site-year. Re-run the pipeline to populate.</p>';
+            return;
+          }
+          // Order matches the disease cards above for visual consistency.
+          // ear_rot is a nested {ger, fer} dict — break it into two cards.
+          const cards = [
+            metadata.tarspot,
+            metadata.ear_rot && metadata.ear_rot.ger,
+            metadata.ear_rot && metadata.ear_rot.fer,
+            metadata.southern_rust,
+            metadata.mycotoxin,
+          ];
+          host.innerHTML = cards.map(modelCard).join('');
         }
 
         function render() {
@@ -428,6 +492,8 @@ const hasData = sites.length > 0 && years.length > 0;
             else if (it.kind === 'shade')  swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
             return '<span class="cd-legitem">' + swatch + '<span>' + it.label + '</span></span>';
           }).join('');
+
+          renderMethods(d.model_metadata || {});
 
           const sb = document.getElementById('cd-scouting-body');
           if (!d.scouting || d.scouting.length === 0) {
@@ -773,5 +839,103 @@ const hasData = sites.length > 0 && years.length > 0;
     color: var(--text-muted);
     font-size: 0.85rem;
     margin: 0;
+  }
+
+  /* Model methods — collapsed details element below the bottom panels.
+     Open it for thresholds, inputs, citations, and performance metrics
+     pulled straight from each model's METADATA dict. */
+  .cd-methods {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 1rem;
+  }
+  .cd-methods summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .cd-methods summary::-webkit-details-marker { display: none; }
+  .cd-methods-title {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .cd-methods-title::before {
+    content: '▸';
+    display: inline-block;
+    margin-right: 8px;
+    color: var(--text-muted);
+    transition: transform 0.15s ease;
+  }
+  .cd-methods[open] .cd-methods-title::before {
+    transform: rotate(90deg);
+  }
+  .cd-methods-hint {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cd-methods[open] .cd-methods-hint { display: none; }
+
+  .cd-methods-body {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .cd-model {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .cd-model h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .cd-model dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 5px 12px;
+    font-size: 0.82rem;
+  }
+  .cd-model dt {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 3px;
+  }
+  .cd-model dd {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .cd-model ul {
+    margin: 0;
+    padding-left: 14px;
+  }
+  .cd-model li {
+    margin: 0 0 2px;
+  }
+  .cd-cite {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    line-height: 1.4;
   }
 </style>
