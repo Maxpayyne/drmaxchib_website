@@ -1,0 +1,38 @@
+{
+  "year": 2024,
+  "states": {
+    "NE": "2024-07-25",
+    "IA": "2024-07-17",
+    "WI": "2024-08-27",
+    "FL": "2024-05-20",
+    "TX": "2024-06-05",
+    "LA": "2024-06-10",
+    "MS": "2024-06-15",
+    "AL": "2024-06-18",
+    "GA": "2024-06-18",
+    "AR": "2024-07-05",
+    "TN": "2024-07-10",
+    "MO": "2024-07-15",
+    "KS": "2024-07-20",
+    "KY": "2024-07-18",
+    "IL": "2024-07-25",
+    "IN": "2024-07-30",
+    "MN": "2024-08-15",
+    "MI": "2024-08-15",
+    "OH": "2024-08-05",
+    "SD": "2024-08-10"
+  },
+  "verified_states": [
+    "NE",
+    "IA",
+    "WI"
+  ],
+  "estimated": true,
+  "notes": "Strong year — SR spread to 100+ new counties vs 2023. Verified: NE 2024-07-25 Antelope/Wheeler Counties (UNL extension video), IA mid-July (ISU 2026 retrospective \"observed in mid-July in 2024\"), WI 2024-08-27 Columbia County (Damon Smith Badger Crop Network article meta-published 2024-08-29 saying \"this week\"). MN confirmed in 2024 per Nebraska Farmer Apr 2025 reference (\"even confirmed in Minnesota\") — date estimated mid-August.",
+  "sources": [
+    "https://badgercropnetwork.com/southern-rust-of-corn-in-wisconsin/",
+    "https://mediahub.unl.edu/media/22962",
+    "https://crops.extension.iastate.edu/post/will-southern-rust-be-problem-corn-2026",
+    "https://digitaledition.qwinc.com/publication/?i=843779&article_id=4955829"
+  ]
+}

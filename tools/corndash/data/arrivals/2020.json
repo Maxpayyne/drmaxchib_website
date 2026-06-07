@@ -1,0 +1,31 @@
+{
+  "year": 2020,
+  "states": {
+    "AR": "2020-07-06",
+    "NE": "2020-07-16",
+    "FL": "2020-06-01",
+    "TX": "2020-06-10",
+    "LA": "2020-06-15",
+    "MS": "2020-06-15",
+    "AL": "2020-06-20",
+    "GA": "2020-06-20",
+    "TN": "2020-07-10",
+    "MO": "2020-07-20",
+    "KS": "2020-07-22",
+    "KY": "2020-07-22",
+    "IL": "2020-08-05",
+    "IA": "2020-08-10",
+    "IN": "2020-08-08"
+  },
+  "verified_states": [
+    "AR",
+    "NE"
+  ],
+  "estimated": true,
+  "notes": "Verified: AR 2020-07-06 (Arkansas Crops 2021 article referencing same-date 2020 confirmation), NE 2020-07-16 in Fillmore/Nuckolls/Johnson Counties (UNL CropWatch). Other dates inferred from typical regional timing for a moderate SR year. No published WI confirmation found for 2020. ND Grand Forks County was the first-ever ND record (August 2020) but ND is outside the model's tier set.",
+  "sources": [
+    "https://cropwatch.unl.edu/2019/southern-rust-corn-confirmed-southeast-nebraska",
+    "https://arkansascrops.uada.edu/posts/disease/southern-corn-rust-july-2021.aspx",
+    "https://www.tandfonline.com/doi/full/10.1080/07060661.2021.1982012"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "year": 2023,
+  "states": {
+    "FL": "2023-05-15",
+    "TX": "2023-06-01",
+    "LA": "2023-06-10",
+    "MS": "2023-06-15",
+    "AL": "2023-06-15",
+    "GA": "2023-06-15",
+    "AR": "2023-07-05",
+    "TN": "2023-07-12",
+    "MO": "2023-07-25",
+    "KS": "2023-07-22",
+    "KY": "2023-07-20",
+    "NE": "2023-08-01",
+    "IA": "2023-08-08",
+    "IL": "2023-08-05"
+  },
+  "verified_states": [],
+  "estimated": true,
+  "verified_absences": [
+    "WI"
+  ],
+  "notes": "Quiet year. WI confirmed-absent per Smith 2024 \"first in a couple of years\" framing. 2023 was the comparison baseline for the 2024 \"100 more counties\" framing — meaning 2023 had a notably restrained SR distribution. MN absent for 2023; no published confirmation found. IA/IL dates estimated from \"late July through mid-August\" pattern.",
+  "sources": [
+    "https://badgercropnetwork.com/southern-rust-of-corn-in-wisconsin/",
+    "https://www.oklahomafarmreport.com/okfr/2025/03/25/the-southern-corn-rust-invasion-hundreds-more-counties-impacted-by-southern-rust-than-previous-season/"
+  ]
+}

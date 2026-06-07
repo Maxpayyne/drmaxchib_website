@@ -1,0 +1,30 @@
+{
+  "year": 2022,
+  "states": {
+    "FL": "2022-05-20",
+    "TX": "2022-06-05",
+    "LA": "2022-06-15",
+    "MS": "2022-06-20",
+    "AL": "2022-06-25",
+    "GA": "2022-06-25",
+    "AR": "2022-07-10",
+    "TN": "2022-07-15",
+    "MO": "2022-07-25",
+    "KS": "2022-07-25",
+    "KY": "2022-07-22",
+    "NE": "2022-08-01",
+    "IA": "2022-08-05",
+    "IL": "2022-08-08",
+    "IN": "2022-08-10"
+  },
+  "verified_states": [],
+  "estimated": true,
+  "verified_absences": [
+    "WI"
+  ],
+  "notes": "Moderate-quiet year for upper Midwest. Damon Smith's 2024 article explicitly states WI's 2024 confirmation was \"a first in a couple of years\" — so WI is confirmed-absent for 2022. No published MN confirmation surfaced for 2022. IA/IL dates estimated from \"late July through mid-August\" pattern per 2026 ISU retrospective.",
+  "sources": [
+    "https://badgercropnetwork.com/southern-rust-of-corn-in-wisconsin/",
+    "https://crops.extension.iastate.edu/post/will-southern-rust-be-problem-corn-2026"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "year": 2021,
+  "states": {
+    "AR": "2021-07-06",
+    "KY": "2021-07-12",
+    "FL": "2021-05-15",
+    "TX": "2021-06-01",
+    "LA": "2021-06-05",
+    "MS": "2021-06-10",
+    "AL": "2021-06-12",
+    "GA": "2021-06-09",
+    "TN": "2021-06-25",
+    "MO": "2021-07-15",
+    "NE": "2021-07-20",
+    "KS": "2021-07-18",
+    "IA": "2021-07-22",
+    "IL": "2021-07-25",
+    "IN": "2021-08-01",
+    "MI": "2021-08-10",
+    "MN": "2021-08-12",
+    "WI": "2021-08-18",
+    "OH": "2021-08-05"
+  },
+  "verified_states": [
+    "AR",
+    "KY",
+    "GA"
+  ],
+  "estimated": true,
+  "notes": "Strong SR year. Verified: KY 2021-07-12 Union County (UKY July 2021 newsletter), AR 2021-07-06 (Arkansas Crops); GA 2021-06-09 Jeff Davis County (UGA Bulloch Extension). DTN Aug 20 article confirmed widespread presence in NE/IA/IL/IN/central MI by Aug 20. WI/MN dates estimated from that spread pattern — Smith's 2024 \"first in a couple of years\" framing implies 2021 did confirm WI, since 2022 and 2023 did not.",
+  "sources": [
+    "https://graincrops.ca.uky.edu/files/2021_07julcornsoynewsletter.pdf",
+    "https://arkansascrops.uada.edu/posts/disease/southern-corn-rust-july-2021.aspx",
+    "https://site.extension.uga.edu/bullochag/2021/06/southern-corn-rust-confirmed-in-jeff-davis-county",
+    "https://www.dtnpf.com/agriculture/web/ag/crops/article/2021/08/20/tar-spot-southern-corn-rust-still"
+  ]
+}

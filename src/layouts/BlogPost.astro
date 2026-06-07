@@ -62,7 +62,23 @@ const category = BLOG_CATEGORIES[data.category];
             ))}
           </ul>
         )}
+
+        {data.heroImage && (
+          <figure class="post-hero">
+            <img
+              src={data.heroImage.src}
+              width={data.heroImage.width}
+              height={data.heroImage.height}
+              alt={data.heroImageAlt ?? data.title}
+              loading="eager"
+              decoding="async"
+            />
+            {data.heroImageAlt && <figcaption>{data.heroImageAlt}</figcaption>}
+          </figure>
+        )}
       </header>
+
+        
 
       <div class="hairline reveal reveal-delay-1" aria-hidden="true"></div>
 
@@ -152,5 +168,22 @@ const category = BLOG_CATEGORIES[data.category];
     color: var(--text-muted);
     font-size: 0.9375rem;
     margin-top: 2rem;
+  }
+
+  .post-hero {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .post-hero img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .post-hero figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
   }
 </style>
