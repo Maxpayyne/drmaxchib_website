@@ -210,6 +210,41 @@
     }
   },
   {
+    "site": "arl",
+    "site_name": "Arlington ARS",
+    "year": 2026,
+    "file": "arl_2026.json",
+    "summary": {
+      "ger_conducive_days": 15,
+      "ger_conducive_days_strict": 2,
+      "fer_conducive_days": 12,
+      "ger_silking_window_sum": 0,
+      "fer_silking_window_sum": 0,
+      "tarspot_peak_risk": 0.9074114360621217,
+      "tarspot_peak_date": "2026-06-19 00:00:00",
+      "tarspot_days_above_threshold": 2,
+      "srust_conducive_days": 4,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.014285714285714285,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.0,
+      "mycotoxin_silking_mean": 0.0,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "\u2014"
+    },
+    "phenology": {
+      "silking_date": null,
+      "window_start": "2026-07-19",
+      "window_end": "2026-08-08",
+      "source": "default_doy_200_220",
+      "planting_date": "2026-05-05",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  },
+  {
     "site": "msh",
     "site_name": "Marshfield ARS",
     "year": 2020,
@@ -420,6 +455,41 @@
     }
   },
   {
+    "site": "msh",
+    "site_name": "Marshfield ARS",
+    "year": 2026,
+    "file": "msh_2026.json",
+    "summary": {
+      "ger_conducive_days": 9,
+      "ger_conducive_days_strict": 2,
+      "fer_conducive_days": 8,
+      "ger_silking_window_sum": 0,
+      "fer_silking_window_sum": 0,
+      "tarspot_peak_risk": 0.9206825321519916,
+      "tarspot_peak_date": "2026-06-19 00:00:00",
+      "tarspot_days_above_threshold": 2,
+      "srust_conducive_days": 2,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.007142857142857143,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.0,
+      "mycotoxin_silking_mean": 0.0,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "\u2014"
+    },
+    "phenology": {
+      "silking_date": null,
+      "window_start": "2026-07-19",
+      "window_end": "2026-08-08",
+      "source": "default_doy_200_220",
+      "planting_date": "2026-05-10",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  },
+  {
     "site": "pds",
     "site_name": "Prairie du Sac (DFRC)",
     "year": 2020,
@@ -626,6 +696,41 @@
       "window_end": "2025-08-10",
       "source": "gdd_from_planting",
       "planting_date": "2025-05-03",
+      "hybrid_gdd_to_silk_c": 778.0
+    }
+  },
+  {
+    "site": "pds",
+    "site_name": "Prairie du Sac (DFRC)",
+    "year": 2026,
+    "file": "pds_2026.json",
+    "summary": {
+      "ger_conducive_days": 15,
+      "ger_conducive_days_strict": 4,
+      "fer_conducive_days": 11,
+      "ger_silking_window_sum": 0,
+      "fer_silking_window_sum": 0,
+      "tarspot_peak_risk": 0.8658111011249048,
+      "tarspot_peak_date": "2026-06-19 00:00:00",
+      "tarspot_days_above_threshold": 2,
+      "srust_conducive_days": 6,
+      "srust_silking_window_sum": 0,
+      "srust_peak_risk": 0.01785714285714286,
+      "srust_arrival_tier": "none",
+      "srust_arrival_state": null,
+      "srust_arrival_date": null,
+      "srust_arrival_modifier": 0.05,
+      "mycotoxin_peak_score": 0.0,
+      "mycotoxin_silking_mean": 0.0,
+      "mycotoxin_category": "Low",
+      "mycotoxin_dominant": "\u2014"
+    },
+    "phenology": {
+      "silking_date": null,
+      "window_start": "2026-07-19",
+      "window_end": "2026-08-08",
+      "source": "default_doy_200_220",
+      "planting_date": "2026-05-01",
       "hybrid_gdd_to_silk_c": 778.0
     }
   }
