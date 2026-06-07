@@ -81,21 +81,29 @@ def dominant_driver(ger_silk_days: int, fer_silk_days: int) -> str:
 def compute(
     ear_rot_frame: pd.DataFrame,
     silking_window: dict | None = None,
-    grain_fill_days_after_silking: int = 45,
 ) -> pd.DataFrame:
     """Compute daily mycotoxin score from the ear_rot output frame.
 
     Expects the ear_rot_frame to contain ger_14d and fer_14d columns
     (rolling 14-day sums of conducive flags).
 
-    The score is masked to zero outside the ear-susceptibility window.
-    Gibberella and Fusarium ear rots infect through the silks (Reid 1999)
-    and mycotoxin synthesis occurs in developing kernels through grain
-    fill. No silks, no ears, no infection, no mycotoxin — so conducive
-    weather before silking and after physiological maturity does not
-    contribute to mycotoxin pressure. The window runs from the
-    silking-window start (~R1 minus a few days) through silking +
-    `grain_fill_days_after_silking` (default 45 d, approximately R6).
+    The score is masked to zero BEFORE silking only — once ears exist they
+    remain susceptible through grain fill, drying-down, late-season
+    standing corn, and (where moisture allows) into stored silage. We
+    do not impose an artificial upper-bound cutoff because:
+
+    - Some growers leave corn in the field well into October-November,
+      and the GER/FER infection thresholds (T ≥ 15 °C AND RH ≥ 80 %)
+      can still be satisfied during that period.
+    - Once kernels are infected, mycotoxin can continue accumulating
+      whenever the weather is conducive.
+    - The rolling 14-day weather sums naturally taper the score in late
+      autumn when conducive conditions become rare — no artificial cap
+      is needed.
+
+    The pre-silking mask remains absolute: with no ears, there can be no
+    ear-rot infection and no resulting mycotoxin, regardless of how
+    conducive the weather is.
     """
     if "ger_14d" not in ear_rot_frame.columns or "fer_14d" not in ear_rot_frame.columns:
         raise ValueError("ear_rot_frame must contain ger_14d and fer_14d columns")
@@ -107,39 +115,22 @@ def compute(
     if silking_window:
         try:
             window_start = pd.Timestamp(silking_window["window_start"])
-            # End of susceptibility = silking + grain_fill days (~R6).
-            # If we have an explicit silking_date use it; otherwise pad the
-            # window_end conservatively.
-            if silking_window.get("silking_date"):
-                susceptibility_end = (
-                    pd.Timestamp(silking_window["silking_date"])
-                    + pd.Timedelta(days=grain_fill_days_after_silking)
-                )
-            else:
-                susceptibility_end = (
-                    pd.Timestamp(silking_window["window_end"])
-                    + pd.Timedelta(days=grain_fill_days_after_silking - 18)
-                )
+            # Pre-silking: zero — no ears exist yet.
+            pre_silking = out.index < window_start
+            out.loc[pre_silking, "mycotoxin_score"] = 0.0
 
-            outside_mask = (out.index < window_start) | (out.index > susceptibility_end)
-            out.loc[outside_mask, "mycotoxin_score"] = 0.0
-
-            # Silking-window mean uses the silking window itself, not the
-            # full susceptibility window — that's the period of primary
-            # infection and is what the dashboard card surfaces.
+            # Silking-window mean for the headline card number — primary
+            # infection window only.
             silk_end = pd.Timestamp(silking_window["window_end"])
             silk_mask = (out.index >= window_start) & (out.index <= silk_end)
             silking_mean = float(out.loc[silk_mask, "mycotoxin_score"].mean())
             out.attrs["silking_mean"] = silking_mean if pd.notna(silking_mean) else 0.0
-            out.attrs["susceptibility_window"] = {
-                "start": window_start.date().isoformat(),
-                "end": susceptibility_end.date().isoformat(),
-            }
+            out.attrs["mask_start"] = window_start.date().isoformat()
         except (KeyError, ValueError):
             out.attrs["silking_mean"] = None
     else:
-        # Without a silking window we have no biological anchor — clamp to
-        # zero so the dashboard never shows pre-emergence mycotoxin risk.
+        # No silking window — zero out everything since we can't anchor
+        # the susceptibility start without it.
         out["mycotoxin_score"] = 0.0
         out.attrs["silking_mean"] = None
 

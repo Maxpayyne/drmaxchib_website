@@ -182,6 +182,7 @@ const hasData = sites.length > 0 && years.length > 0;
             mycotoxin:isDark ? '#a78bfa' : '#7e22ce',  // purple
             ger: tok('--accent', isDark ? '#8eb190' : '#2f5734'),
             fer: isDark ? '#fb923c' : '#ea580c',       // orange
+            rain: isDark ? 'rgba(122,166,232,0.55)' : 'rgba(58,108,166,0.45)', // pale blue bars
             muted: tok('--text-muted', '#6b6b66'),
             grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)',
           };
@@ -261,6 +262,7 @@ const hasData = sites.length > 0 && years.length > 0;
           const labels = d.daily.map(r => r.date);
           const tempMean = d.daily.map(r => r.temp_mean);
           const rhMean = d.daily.map(r => r.rh_mean);
+          const precip = d.daily.map(r => r.precip_mm || 0);
           const C = chartColors();
 
           // Disease-specific series + legend, switched by the tab control.
@@ -348,23 +350,34 @@ const hasData = sites.length > 0 && years.length > 0;
           if (chart) chart.destroy();
           const ctx = document.getElementById('cd-chart').getContext('2d');
           const datasets_ = [
+            // Precipitation bars at the bottom — drawn first so other
+            // series overlay on top.
+            { type: 'bar', label: 'Daily precipitation (mm)', data: precip,
+              backgroundColor: C.rain, borderColor: 'transparent',
+              yAxisID: 'y2',
+              categoryPercentage: 0.95, barPercentage: 1.0,
+              order: 10 },
             { type: 'line', label: 'Temp (°C)', data: tempMean,
               borderColor: C.temp, backgroundColor: 'transparent',
-              borderWidth: 1.4, pointRadius: 0, tension: 0.25, yAxisID: 'y' },
+              borderWidth: 1.4, pointRadius: 0, tension: 0.25, yAxisID: 'y',
+              order: 1 },
             { type: 'line', label: 'RH (%)', data: rhMean,
               borderColor: C.rh, backgroundColor: 'transparent',
               borderWidth: 1.4, pointRadius: 0, tension: 0.25,
-              yAxisID: 'y1', borderDash: [4, 3] },
+              yAxisID: 'y1', borderDash: [4, 3],
+              order: 2 },
             { type: 'line', label: riskSeries.label, data: riskSeries.values,
               borderColor: riskSeries.color, backgroundColor: seriesColorRgba(0.12),
               borderWidth: 1.8, pointRadius: 0, tension: 0.2,
-              yAxisID: 'y1', fill: true, spanGaps: false },
+              yAxisID: 'y1', fill: true, spanGaps: false,
+              order: 3 },
           ];
-          riskSeries.markers.forEach(m => {
+          riskSeries.markers.forEach((m, idx) => {
             datasets_.push({
               type: 'scatter', label: m.label,
               data: m.data.map((v, i) => v == null ? null : { x: labels[i], y: v }),
               backgroundColor: m.color, pointRadius: 4.5, pointStyle: m.style, yAxisID: 'y',
+              order: 4 + idx,
             });
           });
 
@@ -382,7 +395,12 @@ const hasData = sites.length > 0 && years.length > 0;
                      grid: { color: C.grid } },
                 y1: { position: 'right', title: { display: true, text: 'RH % / risk %', color: C.muted, font: { size: 10 } },
                       min: 0, max: 100, ticks: { font: { size: 10 }, color: C.muted },
-                      grid: { display: false } }
+                      grid: { display: false } },
+                // Hidden axis dedicated to precipitation. Range 0-150 mm
+                // means a typical 10 mm rain takes about 7 % of chart
+                // height, a heavy 30 mm rain about 20 %, keeping the
+                // bars confined to the bottom strip.
+                y2: { display: false, min: 0, max: 150, grid: { display: false } },
               }
             },
             plugins: [silkOverlay]
@@ -392,6 +410,7 @@ const hasData = sites.length > 0 && years.length > 0;
           const legendDefs = [
             { kind: 'line',   color: C.temp, label: 'Daily mean temperature (°C)' },
             { kind: 'dashed', color: C.rh,   label: 'Daily mean relative humidity (%)' },
+            { kind: 'bars',   color: C.rain, label: 'Daily precipitation (mm)' },
             { kind: 'area',   color: riskSeries.color, label: riskSeries.label },
           ];
           riskSeries.markers.forEach(m => {
@@ -404,6 +423,7 @@ const hasData = sites.length > 0 && years.length > 0;
             if (it.kind === 'line')        swatch = '<span class="cd-sw cd-sw-line" style="--c:' + it.color + '"></span>';
             else if (it.kind === 'dashed') swatch = '<span class="cd-sw cd-sw-dashed" style="--c:' + it.color + '"></span>';
             else if (it.kind === 'area')   swatch = '<span class="cd-sw cd-sw-area" style="--c:' + it.color + '"></span>';
+            else if (it.kind === 'bars')   swatch = '<span class="cd-sw cd-sw-bars" style="--c:' + it.color + '"></span>';
             else if (it.kind === 'cross')  swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">✕</span>';
             else if (it.kind === 'shade')  swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
             return '<span class="cd-legitem">' + swatch + '<span>' + it.label + '</span></span>';
@@ -682,6 +702,19 @@ const hasData = sites.length > 0 && years.length > 0;
     height: 12px;
     background: color-mix(in oklab, var(--c) 14%, transparent);
     border: 1px dashed color-mix(in oklab, var(--c) 55%, transparent);
+    border-radius: 1px;
+  }
+  /* Bars swatch: three small vertical bars to mimic a histogram. */
+  .cd-sw-bars {
+    height: 12px;
+    background:
+      linear-gradient(to right,
+        var(--c) 0 22%,
+        transparent 22% 39%,
+        var(--c) 39% 61%,
+        transparent 61% 78%,
+        var(--c) 78% 100%);
+    align-self: flex-end;
     border-radius: 1px;
   }
   .cd-chart-wrap { position: relative; width: 100%; height: 290px; }
