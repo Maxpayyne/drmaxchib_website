@@ -188,8 +188,8 @@ const hasData = sites.length > 0 && years.length > 0;
             tarspot:  isDark ? '#fbbf24' : '#d97706',  // amber
             srust:    isDark ? '#ef4444' : '#b91c1c',  // rust red
             mycotoxin:isDark ? '#a78bfa' : '#7e22ce',  // purple
-            ger: tok('--accent', isDark ? '#8eb190' : '#2f5734'),
-            fer: isDark ? '#fb923c' : '#ea580c',       // orange
+            ger: isDark ? '#fb923c' : '#ea580c',         // Gibberella → orange
+            fer: tok('--accent', isDark ? '#8eb190' : '#2f5734'),  // Fusarium → green
             rain: isDark ? 'rgba(122,166,232,0.55)' : 'rgba(58,108,166,0.45)', // pale blue bars
             muted: tok('--text-muted', '#6b6b66'),
             grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)',
@@ -500,7 +500,7 @@ const hasData = sites.length > 0 && years.length > 0;
             { kind: 'area',   color: riskSeries.color, label: riskSeries.label },
           ];
           riskSeries.markers.forEach(m => {
-            legendDefs.push({ kind: 'cross', color: m.color, label: m.label });
+            legendDefs.push({ kind: 'cross', color: m.color, label: m.label, style: m.style });
           });
           legendDefs.push({ kind: 'shade', color: riskSeries.color, label: silkLabel });
 
@@ -510,7 +510,7 @@ const hasData = sites.length > 0 && years.length > 0;
             else if (it.kind === 'dashed') swatch = '<span class="cd-sw cd-sw-dashed" style="--c:' + it.color + '"></span>';
             else if (it.kind === 'area')   swatch = '<span class="cd-sw cd-sw-area" style="--c:' + it.color + '"></span>';
             else if (it.kind === 'bars')   swatch = '<span class="cd-sw cd-sw-bars" style="--c:' + it.color + '"></span>';
-            else if (it.kind === 'cross')  swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">✕</span>';
+            else if (it.kind === 'cross')  swatch = '<span class="cd-sw cd-sw-cross" style="color:' + it.color + '">' + (it.style === 'cross' ? '✚' : '✕') + '</span>';
             else if (it.kind === 'shade')  swatch = '<span class="cd-sw cd-sw-shade" style="--c:' + it.color + '"></span>';
             return '<span class="cd-legitem">' + swatch + '<span>' + it.label + '</span></span>';
           }).join('');
