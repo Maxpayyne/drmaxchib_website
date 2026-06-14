@@ -335,10 +335,10 @@ const hasData = sites.length > 0 && years.length > 0;
               color: C.tarspot,
               values: d.daily.map(r => r.tarspot_risk == null ? null : r.tarspot_risk * 100),
               label: 'Tar spot risk · Webster ensemble (%)',
-              markers: [
-                { color: C.ger, label: 'Gibberella conducive day',
-                  data: d.daily.map(r => r.ger_conducive ? 47 : null), style: 'crossRot' },
-              ],
+              // No conducive-day markers on this tab: GER/FER belong to a
+              // different pathogen group and would just add visual noise to
+              // the tar spot risk readout.
+              markers: [],
             },
             srust: {
               color: C.srust,
@@ -438,10 +438,32 @@ const hasData = sites.length > 0 && years.length > 0;
           ];
           riskSeries.markers.forEach((m, idx) => {
             datasets_.push({
-              type: 'scatter', label: m.label,
-              data: m.data.map((v, i) => v == null ? null : { x: labels[i], y: v }),
-              backgroundColor: m.color, pointRadius: 4.5, pointStyle: m.style, yAxisID: 'y',
-              order: 4 + idx,
+              // Use type 'line' with showLine: false instead of type
+              // 'scatter'. Reason: Chart.js 4 doesn't reliably resolve
+              // string x-values ({x: '2025-06-16', y: 47}) against
+              // category labels in mixed-type charts; the points get
+              // parsed and silently dropped. Line datasets on a category
+              // axis use plain array indexing (data[i] → labels[i]),
+              // which is what we actually want for daily markers.
+              type: 'line',
+              label: m.label,
+              data: m.data,
+              showLine: false,
+              // Chart.js's 'cross' and 'crossRot' point styles are STROKED
+              // shapes (two lines forming + or ×). They take their color
+              // from borderColor + borderWidth, not from backgroundColor.
+              borderColor: m.color,
+              backgroundColor: m.color,
+              borderWidth: 1.8,
+              pointRadius: 5,
+              pointBorderColor: m.color,
+              pointBorderWidth: 1.8,
+              pointStyle: m.style,
+              yAxisID: 'y',
+              // Chart.js draws LOWER order on top. Markers must sit above
+              // the filled risk area (order 3); otherwise a large fill
+              // (e.g. tar spot in a high-pressure year) buries them.
+              order: 0,
             });
           });
 
